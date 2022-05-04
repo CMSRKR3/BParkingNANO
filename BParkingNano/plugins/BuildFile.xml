@@ -9,6 +9,7 @@
 <use   name="DataFormats/Candidate"/>
 <use   name="DataFormats/HLTReco"/>
 <use   name="DataFormats/PatCandidates"/>
+<use   name="DataFormats/Provenance"/>
 <use   name="CommonTools/Utils"/>
 <use   name="CommonTools/CandAlgos"/>
 <use   name="CommonTools/Statistics"/>

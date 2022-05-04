@@ -257,8 +257,8 @@ void BToKLLBuilder::produce(edm::StreamID, edm::Event &evt, edm::EventSetup cons
         // check if the track is the kaon
         if (k_ptr->userCand("cand") ==  edm::Ptr<reco::Candidate> ( iso_tracks, iTrk ) ) continue;
         // check if the track is one of the two leptons
-        if (track_to_lepton_match(l1_ptr, iso_tracks.id(), iTrk) || 
-            track_to_lepton_match(l2_ptr, iso_tracks.id(), iTrk) ) continue;
+        if (track_to_lepton_match(l1_ptr, iso_tracks.id().id(), iTrk) ||
+            track_to_lepton_match(l2_ptr, iso_tracks.id().id(), iTrk) ) continue;
         // cross clean leptons
         // hard to trace the source particles of low-pT electron in B builder
         // use simple dR cut instead
@@ -328,8 +328,8 @@ void BToKLLBuilder::produce(edm::StreamID, edm::Event &evt, edm::EventSetup cons
         if( !isotrk_dca_selection_(*trk_ptr) ) continue;
         // cross clean PF (electron and muon)
         unsigned int iTrk = trk_ptr->userInt("keyPacked");
-        if (track_to_lepton_match(l1_ptr, iso_tracks.id(), iTrk) || 
-            track_to_lepton_match(l2_ptr, iso_tracks.id(), iTrk) ) {
+        if (track_to_lepton_match(l1_ptr, iso_tracks.id().id(), iTrk) ||
+            track_to_lepton_match(l2_ptr, iso_tracks.id().id(), iTrk) ) {
           continue;
         }
         // cross clean leptons

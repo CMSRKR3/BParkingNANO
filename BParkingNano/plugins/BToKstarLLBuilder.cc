@@ -246,8 +246,8 @@ void BToKstarLLBuilder::produce(edm::StreamID, edm::Event &evt, edm::EventSetup 
         if (trk1_ptr ==  edm::Ptr<reco::Candidate> ( iso_tracks, iTrk ) ) continue;
         if (trk2_ptr ==  edm::Ptr<reco::Candidate> ( iso_tracks, iTrk ) ) continue;
         // check if the track is one of the two leptons
-        if (track_to_lepton_match(l1_ptr, iso_tracks.id(), iTrk) || 
-            track_to_lepton_match(l2_ptr, iso_tracks.id(), iTrk) ) continue;
+        if (track_to_lepton_match(l1_ptr, iso_tracks.id().id(), iTrk) ||
+            track_to_lepton_match(l2_ptr, iso_tracks.id().id(), iTrk) ) continue;
 
         // add to final particle iso if dR < cone
         float dr_to_l1  = deltaR(cand.userFloat("fitted_l1_eta"),  cand.userFloat("fitted_l1_phi"),  trk.eta(), trk.phi());
