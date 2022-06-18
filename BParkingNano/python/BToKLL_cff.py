@@ -96,7 +96,7 @@ BToKeeTable = cms.EDProducer(
         minDR = ufloat('min_dr'),
         maxDR = ufloat('max_dr'),
         # fit and vtx info
-        #chi2 = ufloat('sv_chi2'),
+        chi2 = ufloat('sv_chi2'),
         svprob = ufloat('sv_prob'),
         l_xy = ufloat('l_xy'),
         l_xy_unc = ufloat('l_xy_unc'),
@@ -108,6 +108,12 @@ BToKeeTable = cms.EDProducer(
         vtx_ez = ufloat('vtx_ez'),
         # Mll
         mll_raw = Var('userCand("dilepton").mass()', float),
+        l1_dxysig = Var('(userCand("l1").dB("PV2D"))/(userCand("l1").edB("PV2D"))',float),
+        l2_dxysig = Var('(userCand("l2").dB("PV2D"))/(userCand("l1").edB("PV2D"))',float),
+        jpsi_pt = ufloat('fitted_mll_pt'),
+        jpsi_prob = Var('userCand("dilepton").userFloat("sv_prob")', float),
+        jpsimumu_deltar = Var('userCand("dilepton").userFloat("lep_deltaR")',float),
+        jpsivert_chi2 = Var('userCand("dilepton").userFloat("sv_chi2")',float),
         mll_llfit = Var('userCand("dilepton").userFloat("fitted_mass")', float), # this might not work
         mllErr_llfit = Var('userCand("dilepton").userFloat("fitted_massErr")', float), # this might not work
         mll_fullfit = ufloat('fitted_mll'),

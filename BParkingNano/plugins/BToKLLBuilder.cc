@@ -189,6 +189,7 @@ void BToKLLBuilder::produce(edm::StreamID, edm::Event &evt, edm::EventSetup cons
       cand.addUserFloat("sv_ndof", fitter.dof()); // float??
       cand.addUserFloat("sv_prob", fitter.prob());
       cand.addUserFloat("fitted_mll" , (fitter.daughter_p4(0) + fitter.daughter_p4(1)).mass());
+      cand.addUserFloat("fitted_mll_pt" , (fitter.daughter_p4(0) + fitter.daughter_p4(1)).pt());
       auto fit_p4 = fitter.fitted_p4();
       cand.addUserFloat("fitted_pt"  , fit_p4.pt()); 
       cand.addUserFloat("fitted_eta" , fit_p4.eta());

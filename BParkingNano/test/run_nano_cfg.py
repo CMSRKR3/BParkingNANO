@@ -1,4 +1,6 @@
 from FWCore.ParameterSet.VarParsing import VarParsing
+import FWCore.Utilities.FileUtils as FileUtils
+
 import FWCore.ParameterSet.Config as cms
 
 options = VarParsing('python')
@@ -53,22 +55,22 @@ filesDict = {
     },
     'mc':{
         # original test file
-        'test_orig':'file:///eos/cms/store/cmst3/group/bpark/BToKmumu_1000Events_MINIAOD.root',
+        #'test_orig':'file:///eos/cms/store/cmst3/group/bpark/BToKmumu_1000Events_MINIAOD.root',
         # test BuToKJpsi_Toee file
-        'test_BuToKJpsi_Toee':'file:///eos/cms/store/group/phys_bphys/ec/RKR3/test/test_files/MINIAOD_BuToKJpsi_Toee_Skim_1000events_102X.root',
+        #'test_BuToKJpsi_Toee':'file:///eos/cms/store/group/phys_bphys/ec/RKR3/test/test_files/MINIAOD_BuToKJpsi_Toee_Skim_1000events_102X.root',
         # test BuToKMuMu file
-        'test_BuToKMuMu':'file:///eos/cms/store/group/phys_bphys/ec/RKR3/test/test_files/MINIAOD_BuToKMuMu_Skim_1000events_102X.root',
+        #'test_BuToKMuMu':'file:///eos/cms/store/group/phys_bphys/ec/RKR3/test/test_files/MINIAOD_BuToKMuMu_Skim_1000events_102X.root',
         # example BuToKMuMu file
-        'BuToKMuMu':'root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/BuToKMuMu_probefilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/PUPoissonAve20_BParking_102X_upgrade2018_realistic_v15-v2/40000/43F82832-A9A2-5D45-950F-BC7D8DAC9C9B.root',
+        #'BuToKMuMu':'root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/BuToKMuMu_probefilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/PUPoissonAve20_BParking_102X_upgrade2018_realistic_v15-v2/40000/43F82832-A9A2-5D45-950F-BC7D8DAC9C9B.root',
         # example BuToKJpsi_ToMuMu file
         'BuToKJpsi_ToMuMu':'root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/BuToKJpsi_ToMuMu_probefilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/PUPoissonAve20_BParking_102X_upgrade2018_realistic_v15-v2/120000/028A5AEE-90AD-7448-A186-A86AA85E1881.root',
         # example BuToKJpsi_Toee file
-        'BuToKJpsi_Toee':'root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/BuToKJpsi_Toee_Mufilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/PUPoissonAve20_BParking_102X_upgrade2018_realistic_v15_ext1-v2/100000/041EF22D-69F5-914D-AD60-F2D1187B0842.root',
+        #'BuToKJpsi_Toee':'root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/BuToKJpsi_Toee_Mufilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/PUPoissonAve20_BParking_102X_upgrade2018_realistic_v15_ext1-v2/100000/041EF22D-69F5-914D-AD60-F2D1187B0842.root',
     }
 }
 
 extension = {False : 'data', True : 'mc'}
-outputFileNANO = cms.untracked.string('_'.join(['BParkNANO', extension[options.isMC], options.tag])+'.root')
+outputFileNANO = cms.untracked.string('_'.join(['BParkNANOCharmoniumData3millwithadditional', extension[options.isMC], options.tag])+'.root')
 outputFileFEVT = cms.untracked.string('_'.join(['BParkFullEvt', extension[options.isMC], options.tag])+'.root')
 if not options.inputFiles:
     options.inputFiles = [
@@ -96,11 +98,14 @@ process.MessageLogger.cerr.FwkReport.reportEvery = options.reportEvery
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(options.maxEvents)
 )
+files = FileUtils.loadListFromFile("/eos/user/j/jodedra/BPARKINGNANOSTUFF/CMSSW_12_4_0_pre3/src/PhysicsTools/BParkingNano/test/bparkingdataset.txt")
+files.extend(FileUtils.loadListFromFile("/eos/user/j/jodedra/BPARKINGNANOSTUFF/CMSSW_12_4_0_pre3/src/PhysicsTools/BParkingNano/test/bparkingdataset.txt"))
 
 # Input source
 process.source = cms.Source(
     "PoolSource",
-    fileNames = cms.untracked.vstring(options.inputFiles),
+    #fileNames = cms.untracked.vstring(*files),
+    fileNames = cms.untracked.vstring(*files),
     secondaryFileNames = cms.untracked.vstring(),
     skipEvents=cms.untracked.uint32(options.skip),
 )

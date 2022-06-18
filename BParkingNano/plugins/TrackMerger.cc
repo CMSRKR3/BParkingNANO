@@ -242,6 +242,7 @@ void TrackMerger::produce(edm::StreamID, edm::Event &evt, edm::EventSetup const 
     pcand.setVertex(trk.vertex());
     pcand.setPdgId(trk.pdgId());
     pcand.addUserInt("isPacked", (iTrk < nTracks));
+    pcand.addUserFloat("isHighPurity",trk.trackHighPurity());
     pcand.addUserInt("isLostTrk", (iTrk < nTracks) ? 0 : 1);      
     pcand.addUserFloat("dxy", trk.dxy());
     pcand.addUserFloat("dxyS", trk.dxy()/trk.dxyError());
