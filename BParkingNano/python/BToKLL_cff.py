@@ -99,8 +99,8 @@ BToKeeTable = cms.EDProducer(
         kIdx = uint('k_idx'),
         minDR = ufloat('min_dr'),
         maxDR = ufloat('max_dr'),
-        asym_transverse_momentum = ufloat("asym_transverse_momentum"),
-        Longitudinal_distance_dilepton_kaon = ufloat("kaon_dilepton_longitudinal_distance"),
+        pT_asym = ufloat("pT_asym"), # Asymmetry of the transverse momentum w.r.t. B trajectory of the dielectron momentum andthat of the K momentum
+        dz_ll_k = ufloat("dz_ll_k"), #Longitudinal distance between Kaon vertex and Di-lepton fitted vertex 
         # pre-selection
         pre_vtx_sel = Var("userInt('pre_vtx_sel')", bool, doc="Satisfies pre-vertexing selections?"),
         post_vtx_sel = Var("userInt('post_vtx_sel')", bool, doc="Satisfies post-vertexing selections?"),
