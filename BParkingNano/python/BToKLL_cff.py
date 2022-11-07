@@ -99,6 +99,8 @@ BToKeeTable = cms.EDProducer(
         kIdx = uint('k_idx'),
         minDR = ufloat('min_dr'),
         maxDR = ufloat('max_dr'),
+        asym_transverse_momentum = ufloat("asym_transverse_momentum"),
+        Longitudinal_distance_dilepton_kaon = ufloat("kaon_dilepton_longitudinal_distance"),
         # pre-selection
         pre_vtx_sel = Var("userInt('pre_vtx_sel')", bool, doc="Satisfies pre-vertexing selections?"),
         post_vtx_sel = Var("userInt('post_vtx_sel')", bool, doc="Satisfies post-vertexing selections?"),

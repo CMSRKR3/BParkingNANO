@@ -216,7 +216,6 @@ void BToKLLBuilder::produce(edm::StreamID, edm::Event &evt, edm::EventSetup cons
       cand.addUserFloat("vtx_ex", sqrt(fitter.fitted_vtx_uncertainty().cxx()));
       cand.addUserFloat("vtx_ey", sqrt(fitter.fitted_vtx_uncertainty().cyy()));
       cand.addUserFloat("vtx_ez", sqrt(fitter.fitted_vtx_uncertainty().czz()));
-
       cand.addUserFloat("fitted_l1_pt" , fitter.daughter_p4(0).pt()); 
       cand.addUserFloat("fitted_l1_eta", fitter.daughter_p4(0).eta());
       cand.addUserFloat("fitted_l1_phi", fitter.daughter_p4(0).phi());
@@ -226,7 +225,9 @@ void BToKLLBuilder::produce(edm::StreamID, edm::Event &evt, edm::EventSetup cons
       cand.addUserFloat("fitted_k_pt"  , fitter.daughter_p4(2).pt()); 
       cand.addUserFloat("fitted_k_eta" , fitter.daughter_p4(2).eta());
       cand.addUserFloat("fitted_k_phi" , fitter.daughter_p4(2).phi());
-    
+      
+      cand.addUserFloat("asym_transverse_momentum",(sqrt( pow(ll_prt->py()*cand.vz() - ll_prt->pz()*cand.vy(),2) + pow(ll_prt->pz()*cand.vx() - ll_prt->px()*cand.vz(),2) +  pow(ll_prt->px()*cand.vy() - ll_prt->py()*cand.vx(),2)) - sqrt( pow(k_ptr->py()*cand.vz() - k_ptr->pz()*cand.vy(),2) + pow(k_ptr->pz()*cand.vx() - k_ptr->px()*cand.vz(),2) +  pow(k_ptr->px()*cand.vy() - k_ptr->py()*cand.vx(),2)))/(sqrt( pow(ll_prt->py()*cand.vz() - ll_prt->pz()*cand.vy(),2) + pow(ll_prt->pz()*cand.vx() - ll_prt->px()*cand.vz(),2) +  pow(ll_prt->px()*cand.vy() - ll_prt->py()*cand.vx(),2)) + sqrt( pow(k_ptr->py()*cand.vz() - k_ptr->pz()*cand.vy(),2) + pow(k_ptr->pz()*cand.vx() - k_ptr->px()*cand.vz(),2) +  pow(k_ptr->px()*cand.vy() - k_ptr->py()*cand.vx(),2))));
+      cand.addUserFloat("kaon_dilepton_longitudinal_distance",k_ptr->vz() -ll_prt->vz());
       // kaon 3D impact parameter from dilepton SV
       TrajectoryStateOnSurface tsos = extrapolator.extrapolate(kaons_ttracks->at(k_idx).impactPointState(), dileptons_kinVtxs->at(ll_idx).fitted_vtx());
       std::pair<bool,Measurement1D> cur2DIP = signedTransverseImpactParameter(tsos, dileptons_kinVtxs->at(ll_idx).fitted_refvtx(), *beamspot);
