@@ -194,5 +194,5 @@ BToKEE_DiEle.toModify(electronsForAnalysis,
                       trgLepton = 'electronTrgSelector:trgElectrons',
                       bdtMin = -100., # Open this up and rely on L/M/T WPs
                       useGsfModeForP4 = True, # Use GSF for PF ele as well
-                      saveLowPtE = False, # Don't use low-pT ele
+                      saveLowPtE = True, # Don't use low-pT ele
                       drForCleaning_wrtTrgLepton = -1.)
