@@ -21,3 +21,4 @@ __init__.py
 *.hdf
 */#*.*#
 production/mc/crab*
+NanoAOD/

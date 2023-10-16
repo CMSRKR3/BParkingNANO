@@ -68,9 +68,9 @@ if not options.inputFiles:
         ]
     elif options.lhcRun == 3:
         options.inputFiles = [
-            'root://cms-xrd-global.cern.ch//store/user/jodedra/BuTOjpsiKEE20221103FIFTYMminiaod/BuTOjpsiKEE20221103FIFTYM/SUMMER22_MINIAOD/221106_001759/0000/step1_inMINIAODSIM_1.root',
+            'file:/eos/home-x/xuyan/RKProj/lowpt/RunF.root',
         ] if options.isMC else [
-            'root://cms-xrd-global.cern.ch//store/data/Run2022C/ParkingDoubleElectronLowMass0/MINIAOD/PromptReco-v1/000/356/170/00000/45c0f2ed-eb5b-4292-abc8-3117424d9432.root'
+            'file:/eos/home-x/xuyan/RKProj/lowpt/RunF.root'
         ]
 annotation = '%s nevts:%d' % (outputFileNANO, options.maxEvents)
 

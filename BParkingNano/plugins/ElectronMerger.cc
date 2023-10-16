@@ -334,7 +334,11 @@ void ElectronMerger::produce(edm::StreamID, edm::Event &evt, edm::EventSetup con
    ele.addUserFloat("LPEleMvaID_2020Sept15RawValue", mva_id); // was called "mvaId"
    ele.addUserFloat("PFEleMvaID_RetrainedRawValue", 20.); // was called "pfmvaId"
    // Run-2 PF ele ID
-   ele.addUserFloat("PFEleMvaID_Fall17NoIsoV2RawValue", 20.); // Run 2 ID
+   ele.addUserFloat("PFEleMvaID_Fall17NoIsoV2RawValue", 20.0);
+   ele.addUserInt("PFEleMvaID_Fall17NoIsoV1wpLoose", 0); //@@ to be deprecated
+   ele.addUserInt("PFEleMvaID_Fall17NoIsoV2wpLoose", 0);
+   ele.addUserInt("PFEleMvaID_Fall17NoIsoV2wp90", 0);
+   ele.addUserInt("PFEleMvaID_Fall17NoIsoV2wp80", 0);
    // Run-3 PF ele ID
    //ele.addUserFloat("PFEleMvaID_Winter22NoIsoV1RawValue", 20.); // Run 3 ID
    ele.addUserFloat("chargeMode", ele.gsfTrack()->chargeMode());
