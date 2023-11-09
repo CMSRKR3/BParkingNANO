@@ -8,9 +8,14 @@ electronPairsForKee = cms.EDProducer(
     lep1Selection = cms.string('pt > 1.3'),
     lep2Selection = cms.string(''),
     filterBySelection = cms.bool(True),
+    # preVtxSelection = cms.string(
+        # 'abs(userCand("l1").vz - userCand("l2").vz) <= 1. && mass() < 5 '
+        # '&& mass() > 0 && charge() == 0 && userFloat("lep_deltaR") > 0.03 && userInt("nlowpt")<2'
+        
+    # ),
     preVtxSelection = cms.string(
         'abs(userCand("l1").vz - userCand("l2").vz) <= 1. && mass() < 5 '
-        '&& mass() > 0 && charge() == 0 && userFloat("lep_deltaR") > 0.03 && userInt("nlowpt")<2'
+        '&& mass() > 0 && userFloat("lep_deltaR") > 0.03 && userInt("nlowpt") < 1'
         
     ),
     postVtxSelection = cms.string('userFloat("sv_chi2") < 998 && userFloat("sv_prob") > 1.e-5'),
@@ -115,6 +120,7 @@ BToKeeTable = cms.EDProducer(
         vtx_ez = ufloat('vtx_ez'),
         # Mll
         mll_raw = Var('userCand("dilepton").mass()', float),
+        mll_charge = Var('userCand("dilepton").charge()', float),
         mll_llfit = Var('userCand("dilepton").userFloat("fitted_mass")', float), # this might not work
         mllErr_llfit = Var('userCand("dilepton").userFloat("fitted_massErr")', float), # this might not work
         mll_fullfit = ufloat('fitted_mll'),

@@ -15,7 +15,7 @@ jobDir = rootDir + jobName + "_" + str(ts) + "/"
 ret = 0
 files_batch = 20
 
-fileList = rootDir + "ParkingDoubleElectronLowMass0-Run2022F-PromptReco-v1.list" 
+fileList = rootDir + "ParkingDoubleElectronLowMass0-Run2022F-PromptReco-v1_1kfile.list" 
 
 while ret == 0:
    ret = os.system("rm filelist_tmp_*.list")
@@ -58,7 +58,7 @@ while ret == 0:
       jdl.write("Error = "     + jobDir + "err/$(ProcId).err\n")
       jdl.write("Log = "       + jobDir + "log/$(ProcId).log\n")
       jdl.write("Arguments = " + eosDir + " " + jobName + " " + rel + " $(ProcId) " + jobCfg + " filelist_tmp_$(ProcId).list " + proxy_path + "\n")
-      jdl.write("+JobFlavour = " + "\"workday\"" + "\n")
+      jdl.write("+JobFlavour = " + "\"tomorrow\"" + "\n")
       # jdl.write("+MaxRuntime = 28800\n")
       # jdl.write("on_exit_remove = (ExitBySignal == False) && (ExitCode == 0)\n")
       # jdl.write("max_retries = 3\n")
