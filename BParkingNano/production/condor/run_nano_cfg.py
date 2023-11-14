@@ -168,6 +168,7 @@ elif options.lhcRun == 3:
     process = nanoAOD_customizeTriggerBitsBPark(process)
     process = nanoAOD_customizeTrackFilteredBPark(process)
     process = nanoAOD_customizeBToKLL(process)
+    process = nanoAOD_customizeBToKstarEE(process)
 
 # Path and EndPath definitions
 if options.lhcRun == 2:
@@ -180,7 +181,9 @@ elif options.lhcRun == 3:
                                           +process.nanoDiEleSequence
                                           +process.nanoTracksSequence
                                           +process.nanoBKeeSequence
-                                          +CountBToKee)
+                                          +CountBToKee
+                                          +process.nanoBKstarEESequence
+                                          +CountBToKstarEE)
 
 # customisation of the process.
 if options.isMC:

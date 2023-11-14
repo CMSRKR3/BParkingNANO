@@ -1,0 +1,11 @@
+universe = vanilla
+Executable = cmsRun.sh
+Should_Transfer_Files = YES
+WhenToTransferOutput = ON_EXIT
+Transfer_Input_Files = cmsRun.sh, run_nano_cfg.py, filelist.tgz
+Output = /afs/cern.ch/work/x/xuyan/RKProj/BParkingNanoOfficial/CMSSW_12_4_8/src/PhysicsTools/BParkingNano/production/condor/Test1_1699908660/out/$(ProcId).out
+Error = /afs/cern.ch/work/x/xuyan/RKProj/BParkingNanoOfficial/CMSSW_12_4_8/src/PhysicsTools/BParkingNano/production/condor/Test1_1699908660/err/$(ProcId).err
+Log = /afs/cern.ch/work/x/xuyan/RKProj/BParkingNanoOfficial/CMSSW_12_4_8/src/PhysicsTools/BParkingNano/production/condor/Test1_1699908660/log/$(ProcId).log
+Arguments = /eos/home-x/xuyan/RKProj/lowpt/Data/Test1_1699908660/ Test1 CMSSW_12_4_8 $(ProcId) run_nano_cfg.py filelist_tmp_$(ProcId).list /afs/cern.ch/user/x/xuyan/private/x509up/x509up_u93529
++JobFlavour = "tomorrow"
+Queue 51

@@ -13,9 +13,9 @@ eosDir = "/eos/home-x/xuyan/RKProj/lowpt/Data/" + jobName + "_" + str(ts) + "/"
 rootDir = os.environ["CMSSW_BASE"] + "/src/PhysicsTools/BParkingNano/production/condor/"
 jobDir = rootDir + jobName + "_" + str(ts) + "/"
 ret = 0
-files_batch = 20
+files_batch = 40
 
-fileList = rootDir + "ParkingDoubleElectronLowMass0-Run2022F-PromptReco-v1_1kfile.list" 
+fileList = rootDir + "ParkingDoubleElectronLowMass0-Run2022F-PromptReco-v1_2kfile.list" 
 
 while ret == 0:
    ret = os.system("rm filelist_tmp_*.list")

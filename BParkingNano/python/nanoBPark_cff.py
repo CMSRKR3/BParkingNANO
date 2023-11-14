@@ -70,11 +70,11 @@ def nanoAOD_customizeBToKstarLL(process):
     return process
 
 def nanoAOD_customizeBToKstarEE(process):
-    process.nanoBKstarEESequence   = cms.Sequence( process.nanoBKstarEESequence + BToKstarEESequence + BToKstarEETable + KstarToKPiTable )
+    process.nanoBKstarEESequence   = cms.Sequence( process.nanoBKstarEESequence + KstarToKPiSequence + BToKstarEESequence + BToKstarEETable + KstarToKPiTable )
     return process
 
 def nanoAOD_customizeBToKstarMuMu(process):
-    process.nanoBKstarMuMuSequence = cms.Sequence( BToKstarMuMuSequence + BToKstarMuMuTable + KstarToKPiTable )
+    process.nanoBKstarMuMuSequence = cms.Sequence( KstarToKPiSequence + BToKstarMuMuSequence + BToKstarMuMuTable + KstarToKPiTable )
     return process
 
 from FWCore.ParameterSet.MassReplace import massSearchReplaceAnyInputTag
