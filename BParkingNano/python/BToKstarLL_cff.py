@@ -205,8 +205,8 @@ BToKstarMuMuTable = BToKstarEETable.clone(
 )
 
 CountBToKstarEE = cms.EDFilter("PATCandViewCountFilter",
-    minNumber = cms.uint32(1),
-    maxNumber = cms.uint32(999999),
+    minNumber = cms.uint32(0),
+    maxNumber = cms.uint32(99999999),
     src = cms.InputTag("BToKstarEE")
 )    
 CountBToKstarMuMu = CountBToKstarEE.clone(
@@ -236,3 +236,23 @@ BToKstarLLSequence = cms.Sequence(
 
 
 BToKstarLLTables = cms.Sequence( BToKstarEETable + BToKstarMuMuTable )
+
+###########
+# Modifiers
+###########
+
+# from PhysicsTools.BParkingNano.modifiers_cff import *
+
+# BToKstarEE_OpenConfig.toModify(electronPairsForKstarEE,
+                           # lep1Selection='pt > 0.5',
+                           # lep2Selection='',
+                           # filterBySelection=False)
+# BToKstarEE_OpenConfig.toModify(BToKstarEE,
+                           # kaonSelection='',
+                           # isoTracksSelection='pt > 0.5 && abs(eta)<2.5',
+                           # isoTracksDCASelection='pt > 0.5 && abs(eta)<2.5',
+                           # isotrkDCACut=0.,
+                           # isotrkDCATightCut=0.,
+                           # drIso_cleaning=0.,
+                           # filterBySelection=False)
+# BToKstarEE_OpenConfig.toModify(CountBToKstarEE,minNumber=0)

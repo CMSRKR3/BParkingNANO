@@ -146,8 +146,9 @@ void TrackMerger::produce(edm::StreamID, edm::Event &evt, edm::EventSetup const 
     const pat::PackedCandidate & trk = (iTrk < nTracks) ? (*tracks)[iTrk] : (*lostTracks)[iTrk-nTracks];
 
     //arranging cuts for speed
-    if(!trk.hasTrackDetails()) continue;
-    if(abs(trk.pdgId()) != 211) continue; //do we want also to keep muons?
+    if(!trk.hasTrackDetails()) continue; //this will remove netrual hadrons (130)
+		// if(abs(trk.pdgId()) != 211 || trk.pdgId() != 130) continue; //do we want also to keep muons?
+		if(abs(trk.pdgId()) != 211) continue; //do we want also to keep muons?
     if(trk.pt() < trkPtCut_ ) continue;
     if(fabs(trk.eta()) > trkEtaCut_) continue;
 

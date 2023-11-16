@@ -23,7 +23,7 @@ options.register('wantFullRECO', False,
     VarParsing.varType.bool,
     "Run this on real data"
 )
-options.register('reportEvery', 10,
+options.register('reportEvery', 100000,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.int,
     "report every N events"
