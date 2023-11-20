@@ -23,7 +23,7 @@ options.register('wantFullRECO', False,
     VarParsing.varType.bool,
     "Run this on real data"
 )
-options.register('reportEvery', 100000,
+options.register('reportEvery', 1,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.int,
     "report every N events"
@@ -39,7 +39,7 @@ options.register('lhcRun', 3,
     "LHC Run 2 or 3 (default)"
 )
 
-options.setDefault('maxEvents', -1)
+options.setDefault('maxEvents', 100)
 options.setDefault('tag', '124X')
 options.parseArguments()
 print(options)
