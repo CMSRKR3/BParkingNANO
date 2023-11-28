@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 
 options = VarParsing('python')
 
-options.register('isMC', False,
+options.register('isMC', True,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
     "Run this on real data"
@@ -23,7 +23,7 @@ options.register('wantFullRECO', False,
     VarParsing.varType.bool,
     "Run this on real data"
 )
-options.register('reportEvery', 100000,
+options.register('reportEvery', 10000,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.int,
     "report every N events"
@@ -68,9 +68,9 @@ if not options.inputFiles:
         ]
     elif options.lhcRun == 3:
         options.inputFiles = [
-            'file:/eos/home-x/xuyan/RKProj/lowpt/RunF.root',
+            'file:/eos/home-x/xuyan/RKProj/KStarllStudy/BToKEE_signal.root',
         ] if options.isMC else [
-            'file:/eos/home-x/xuyan/RKProj/lowpt/RunF.root'
+            'file:/eos/home-x/xuyan/RKProj/KStarllStudy/BToKEE_signal.root'
         ]
 annotation = '%s nevts:%d' % (outputFileNANO, options.maxEvents)
 

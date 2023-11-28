@@ -26,7 +26,7 @@ ls ./
 touch log.txt
 cmsRun ${5} inputFiles_load=${6} 2>&1 | tee log.txt
 cp log.txt ${1}/log_${4}.txt
-cp BParkingNANO_Run3_data_124X.root ${1}/myNano_${4}.root
-rm BParkingNANO_Run3_data_124X.root
+cp BParkingNANO_Run3_mc_124X.root ${1}/myNano_${4}.root
+rm BParkingNANO_Run3_mc_124X.root
 cd ${_CONDOR_SCRATCH_DIR}
 rm -rf ${3}
