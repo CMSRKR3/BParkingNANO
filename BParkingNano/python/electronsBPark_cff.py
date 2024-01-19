@@ -48,13 +48,6 @@ electronsForAnalysis = cms.EDProducer(
     addUserVarsExtra = cms.bool(False),
 )
 
-#cuts minimun number in B both mu and e, min number of trg, dz electron, dz and dr track, 
-countTrgElectrons = cms.EDFilter("PATCandViewCountFilter",
-    minNumber = cms.uint32(1),
-    maxNumber = cms.uint32(999999),
-    src = cms.InputTag("electronTrgSelector", "trgElectrons")
-)
-
 electronBParkTable = cms.EDProducer("SimpleCandidateFlatTableProducer",
  src = cms.InputTag("electronsForAnalysis:SelectedElectrons"),
  cut = cms.string(""),

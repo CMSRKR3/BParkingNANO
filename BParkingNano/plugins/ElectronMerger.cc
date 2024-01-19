@@ -203,6 +203,7 @@ void ElectronMerger::produce(edm::StreamID, edm::Event &evt, edm::EventSetup con
      dzTrg = ele.vz() - trg.vz();
      break; // one trg muon to pass is enough :)
    }
+	 if (trgLepton->empty()) { skipEle=false; } //@@ needed???
    // we skip evts without trg muon
    if (filterEle_ && skipEle) continue;
 
@@ -308,6 +309,9 @@ void ElectronMerger::produce(edm::StreamID, edm::Event &evt, edm::EventSetup con
      dzTrg = ele.vz() - trg.vz();
      break;  // one trg muon is enough 
    }
+	 
+	 if (trgLepton->empty()) { skipEle=false; } //@@ needed???
+	 
    // same here Do we need evts without trg muon? now we skip them
    if (filterEle_ && skipEle) continue;
 

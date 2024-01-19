@@ -4,22 +4,21 @@ import os, re, sys, commands, math, time, calendar
 print '\nSTART\n'
 ts = calendar.timegm(time.gmtime())
 
-jobName = "Test1"
+jobName = "postEE_ext1"
 jobCfg = "run_nano_cfg.py"
 jobScript = "cmsRun.sh"
 rel = "CMSSW_12_4_8"
-eosDir = "/eos/home-x/xuyan/RKProj/lowpt/Data/" + jobName + "_" + str(ts) + "/"
+eosDir = "/eos/home-x/xuyan/RKProj/RKAnalyzer/KStarllStudy/Data/" + jobName + "_" + str(ts) + "/"
 
 rootDir = os.environ["CMSSW_BASE"] + "/src/PhysicsTools/BParkingNano/production/condor/"
 jobDir = rootDir + jobName + "_" + str(ts) + "/"
 ret = 0
 files_batch = 5
 
-fileList = rootDir + "BuToKEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen.list" 
+fileList = rootDir + "BdToK0starEE_K0starToKPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen_postEE_ext1.list" 
 
 while ret == 0:
    ret = os.system("rm filelist_tmp_*.list")
-   ret = os.system("rm filelist.tgz")
    ret = os.system("cp ../../test/" + jobCfg + " ./")
    ret = os.system("mkdir -p " + jobDir)
    ret = os.system("mkdir -p " + eosDir)
@@ -46,23 +45,23 @@ while ret == 0:
       for file in file_content[ichunk*files_batch:(ichunk+1)*files_batch]:
          filelist_tmp.write(file)
       filelist_tmp.close()
-   ret = os.system("tar -cvf filelist.tgz filelist_tmp_*")
+   ret = os.system("tar -cvf filelist_"+jobName+".tgz filelist_tmp_*")
    
    with open(jobDir + jobName + '.jdl', 'w') as jdl:
       jdl.write("universe = vanilla\n")
       jdl.write("Executable = " + jobScript + "\n")
       jdl.write("Should_Transfer_Files = YES\n")
       jdl.write("WhenToTransferOutput = ON_EXIT\n")
-      jdl.write("Transfer_Input_Files = " + jobScript + ", " + jobCfg + ", filelist.tgz" + "\n")
+      jdl.write("Transfer_Input_Files = " + jobScript + ", " + jobCfg + ", filelist_"+jobName+".tgz" + "\n")
       jdl.write("Output = "    + jobDir + "out/$(ProcId).out\n")
       jdl.write("Error = "     + jobDir + "err/$(ProcId).err\n")
       jdl.write("Log = "       + jobDir + "log/$(ProcId).log\n")
       jdl.write("Arguments = " + eosDir + " " + jobName + " " + rel + " $(ProcId) " + jobCfg + " filelist_tmp_$(ProcId).list " + proxy_path + "\n")
+      jdl.write("MY.WantOS = \"el7\"\n")
       jdl.write("+JobFlavour = " + "\"tomorrow\"" + "\n")
       # jdl.write("+MaxRuntime = 28800\n")
       # jdl.write("on_exit_remove = (ExitBySignal == False) && (ExitCode == 0)\n")
-      # jdl.write("max_retries = 3\n")
-      # jdl.write("requirements = Machine =!= LastRemoteHost\n")
+      # jdl.write("requirements = (OpSysAndVer =?= 'CentOS7')\n")
       jdl.write("Queue " + str(chunks) + "\n")      
 
    os.system("condor_submit " + jobDir + jobName + ".jdl")

@@ -73,7 +73,7 @@ electronTrgSelector = cms.EDProducer(
     vertexCollection = cms.InputTag("offlineSlimmedPrimaryVertices"),
     maxdR_matching = cms.double(10.), # not used
     dzForCleaning_wrtTrgElectron = cms.double(1.),
-    filterElectron = cms.bool(True),
+    filterElectron = cms.bool(False),
     ptMin = cms.double(2.),
     absEtaMax = cms.double(1.25),
     HLTPaths=cms.vstring(paths),
@@ -83,8 +83,8 @@ electronTrgSelector = cms.EDProducer(
 countTrgElectrons = cms.EDFilter(
     "PATCandViewCountFilter",
     minNumber = cms.uint32(1),
-    maxNumber = cms.uint32(999999),
-    src = cms.InputTag("electronTrgSelector", "trgElectrons"),
+    maxNumber = cms.uint32(99999999),
+    src = cms.InputTag("electronTrgSelector", "SelectedElectrons"),
 )
 
 #electronsTriggerSequence = cms.Sequence(
