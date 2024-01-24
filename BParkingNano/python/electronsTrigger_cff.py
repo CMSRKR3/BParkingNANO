@@ -73,7 +73,7 @@ electronTrgSelector = cms.EDProducer(
     vertexCollection = cms.InputTag("offlineSlimmedPrimaryVertices"),
     maxdR_matching = cms.double(10.), # not used
     dzForCleaning_wrtTrgElectron = cms.double(1.),
-    filterElectron = cms.bool(False),
+    filterElectron = cms.bool(True),
     ptMin = cms.double(2.),
     absEtaMax = cms.double(1.25),
     HLTPaths=cms.vstring(paths),
@@ -83,21 +83,6 @@ electronTrgSelector = cms.EDProducer(
 countTrgElectrons = cms.EDFilter(
     "PATCandViewCountFilter",
     minNumber = cms.uint32(1),
-    maxNumber = cms.uint32(99999999),
-    src = cms.InputTag("electronTrgSelector", "SelectedElectrons"),
+    maxNumber = cms.uint32(999999),
+    src = cms.InputTag("electronTrgSelector", "trgElectrons"),
 )
-
-#electronsTriggerSequence = cms.Sequence(
-#unpackedPatTrigger
-#    #myTriggerMatches
-#    #+mySlimmedElectronsWithEmbeddedTrigger
-#    electronTrgSelector
-#    +countTrgElectrons
-#)
-
-#electronsTriggerTask = cms.Task(
-#    #myTriggerMatches,
-#    mySlimmedElectronsWithEmbeddedTrigger,
-#    electronTrgSelector,
-#    countTrgElectrons,
-#)

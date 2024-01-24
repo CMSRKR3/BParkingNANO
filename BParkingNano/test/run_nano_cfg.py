@@ -39,7 +39,7 @@ options.register('lhcRun', 3,
     "LHC Run 2 or 3 (default)"
 )
 
-options.setDefault('maxEvents', -1)
+options.setDefault('maxEvents', 100)
 options.setDefault('tag', '124X')
 options.parseArguments()
 print(options)
@@ -70,7 +70,7 @@ if not options.inputFiles:
         options.inputFiles = [
             'file:/eos/home-x/xuyan/RKProj/RKAnalyzer/KStarllStudy/BToKEE_signal.root',
         ] if options.isMC else [
-            'file:/eos/home-x/xuyan/RKProj/RKAnalyzer/KStarllStudy/K0StarEE_ext.root'
+            'file:/eos/home-x/xuyan/RKProj/RKAnalyzer/KStarllStudy/BToKEE_signal.root'
         ]
 annotation = '%s nevts:%d' % (outputFileNANO, options.maxEvents)
 

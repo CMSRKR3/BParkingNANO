@@ -14,15 +14,14 @@ cp ${1}${2}.tgz .
 tar -xf ${2}.tgz
 rm ${2}.tgz
 mv ${5} ${3}/src/PhysicsTools/BParkingNano
-mv filelist_${2}.tgz ${3}/src/PhysicsTools/BParkingNano
+mv filelist.tgz ${3}/src/PhysicsTools/BParkingNano
 
-# export $SCRAM_ARCH=slc7_amd64_gcc10
+# export $SCRAM_ARCH=slc7_amd64_gcc700
 cd ${3}/src/
 scramv1 b ProjectRename -j 8
 eval `scramv1 runtime -sh` # cmsenv is an alias not on the workers
-
 cd PhysicsTools/BParkingNano
-tar -xf filelist_${2}.tgz
+tar -xf filelist.tgz
 ls ./
 touch log.txt
 cmsRun ${5} inputFiles_load=${6} 2>&1 | tee log.txt

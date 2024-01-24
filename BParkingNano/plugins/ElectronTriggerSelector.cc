@@ -217,11 +217,15 @@ void ElectronTriggerSelector::produce(edm::Event& iEvent, const edm::EventSetup&
       //unsigned int iEle(&electron - &(electrons->at(0)) );
         if(electron.pt()<ptMin_) continue;
         if(fabs(electron.eta())>absEtaMax_) continue;
-				if(debug>1)
-					std::cout << "nele=" << nele << " pt=" << electron.pt() << " eta=" << electron.eta() << " phi=" << electron.phi() << std::endl;
-				nele++;
-				if(electron.triggerObjectMatches().empty()) continue;
-				mele++;
+	if(debug>1)
+	  std::cout << "nele=" << nele
+		    << " pt=" << electron.pt()
+		    << " eta=" << electron.eta()
+		    << " phi=" << electron.phi()
+		    << std::endl;
+	nele++;
+	if(electron.triggerObjectMatches().empty()) continue;
+	mele++;
     }
 
     if(debug>1)
@@ -236,47 +240,47 @@ void ElectronTriggerSelector::produce(edm::Event& iEvent, const edm::EventSetup&
 		<< std::endl;
 
     for(const pat::Electron &electron : *electrons){
-				if(debug>1)
-				std::cout << "Electron Pt=" << electron.pt() 
-				<< " Eta=" << electron.eta() 
-				<< " Phi=" << electron.phi()
-				<< " NtriggerObjectMatches=" << electron.triggerObjectMatches().size()
-				<< std::endl;
-				std::vector<int> frs(HLTPaths_.size(),0); //path fires for each reco electron
-				std::vector<int> sds(L1Seeds_.size(),0);// L1 Seeds for each L1 electron
-				std::vector<float> temp_matched_to(HLTPaths_.size(),1000.);
-				std::vector<float> temp_DR(HLTPaths_.size(),1000.);
-				std::vector<float> temp_DPT(HLTPaths_.size(),1000.);
-				int ipath=-1;
-				int iseed=-1;
+        if(debug>1)
+	  std::cout << "Electron Pt=" << electron.pt() 
+		    << " Eta=" << electron.eta() 
+		    << " Phi=" << electron.phi()
+		    << " NtriggerObjectMatches=" << electron.triggerObjectMatches().size()
+		    << std::endl;
+        std::vector<int> frs(HLTPaths_.size(),0); //path fires for each reco electron
+        std::vector<int> sds(L1Seeds_.size(),0);// L1 Seeds for each L1 electron
+        std::vector<float> temp_matched_to(HLTPaths_.size(),1000.);
+        std::vector<float> temp_DR(HLTPaths_.size(),1000.);
+        std::vector<float> temp_DPT(HLTPaths_.size(),1000.);
+        int ipath=-1;
+        int iseed=-1;
 
-				for (const std::string& seed: L1Seeds_){
-					iseed++;
-					char cstr[(seed+"*").size()+1];
-					strcpy( cstr,(seed+"*").c_str());
-					if(electron.triggerObjectMatches().size()!=0){
-						for(size_t i=0;i<electron.triggerObjectMatches().size(); i++){
-							if(debug>1) {
-								std::cout << "  iMatch=" << i << " PathNames=";
-								for(auto const & name : electron.triggerObjectMatch(i)->pathNames()){
-									std::cout << " " << name;
-								}
-								std::cout << " AlgoNames=";
-								for(auto const & name : electron.triggerObjectMatch(i)->algorithmNames()){
-									std::cout << " " << name;
-								}
-								std::cout << std::endl;
-							}
-							if(electron.triggerObjectMatch(i)!=0 && electron.triggerObjectMatch(i)->hasAlgorithmName(cstr,true)){
-								sds[iseed]=1;
-								if(debug>1)
-									std::cout << "  L1 Seed=" << cstr
-											<< " fired=" << sds[iseed]
-											<< std::endl;
-							}
-						}
-					}
-				}
+        for (const std::string& seed: L1Seeds_){
+	  iseed++;
+	  char cstr[(seed+"*").size()+1];
+	  strcpy( cstr,(seed+"*").c_str());
+	  if(electron.triggerObjectMatches().size()!=0){
+	    for(size_t i=0;i<electron.triggerObjectMatches().size(); i++){
+	      if(debug>1) {
+		std::cout << "  iMatch=" << i << " PathNames=";
+		for(auto const & name : electron.triggerObjectMatch(i)->pathNames()){
+		  std::cout << " " << name;
+		}
+		std::cout << " AlgoNames=";
+		for(auto const & name : electron.triggerObjectMatch(i)->algorithmNames()){
+		  std::cout << " " << name;
+		}
+		std::cout << std::endl;
+	      }
+	      if(electron.triggerObjectMatch(i)!=0 && electron.triggerObjectMatch(i)->hasAlgorithmName(cstr,true)){
+		sds[iseed]=1;
+		if(debug>1)
+		  std::cout << "  L1 Seed=" << cstr
+			    << " fired=" << sds[iseed]
+			    << std::endl;
+	      }
+	    }
+	  }
+        }
 
         for (const std::string& path: HLTPaths_){
             ipath++;
@@ -286,52 +290,55 @@ void ElectronTriggerSelector::produce(edm::Event& iEvent, const edm::EventSetup&
             std::vector<float> temp_dpt(electron.triggerObjectMatches().size(),1000.);
             std::vector<float> temp_pt(electron.triggerObjectMatches().size(),1000.);
             char cstr[ (path+"*").size() + 1];
-						strcpy( cstr, (path+"*").c_str() );       
-						if(debug>1) 
-							std::cout << "  HLT path=" << cstr << endl;
+	    strcpy( cstr, (path+"*").c_str() );       
+	    if(debug>1) 
+	      std::cout << "  HLT path=" << cstr << endl;
             //Here we find all the HLT objects from each HLT path each time that are matched with the reco electron.
             if(electron.triggerObjectMatches().size()!=0){
                 for(size_t i=0; i<electron.triggerObjectMatches().size();i++){
 //                if(electron.triggerObjectMatch(i)!=0 && electron.triggerObjectMatch(i)->hasAlgorithm)
-									if(debug>1) {
-										if (electron.triggerObjectMatch(i)!=0) {
-											std::cout << "  iMatch=" << i << " PathNames=";
-											for(auto const & name : electron.triggerObjectMatch(i)->pathNames()){
-									std::cout << " " << name;
-											}
-											std::cout << " AlgoNames=";
-											for(auto const & name : electron.triggerObjectMatch(i)->algorithmNames()){
-									std::cout << " " << name;
-											}
-											std::cout << std::endl;
-										}
-										if(electron.triggerObjectMatch(i)!=0 ) {
-										std::cout << "HERE0 "
-										<< cstr << " "
-										<< electron.triggerObjectMatch(i)->hasPathName(cstr,false,false) << " "
-										<< electron.triggerObjectMatch(i)->hasPathName(cstr,false,true) << " "
-										<< electron.triggerObjectMatch(i)->hasPathName(cstr,true,false) << " "
-										<< electron.triggerObjectMatch(i)->hasPathName(cstr,true,true) << " "
-										<< electron.triggerObjectMatch(i)->hasPathLastFilterAccepted() << " "
-										<< electron.triggerObjectMatch(i)->hasPathL3FilterAccepted() << " "
-										<< std::endl;
-										}
-									}
-									if(electron.triggerObjectMatch(i)!=0 && electron.triggerObjectMatch(i)->hasPathName(cstr,false,true)){
-										//if(abs(electron.triggerObjectMatch(i)->eta())>1.5) std::cout << "HEEEEEEEEEEEEEEEEEEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE eta=" <<electron.triggerObjectMatch(i)->eta();
-										if(debug>1) std::cout << "HERE1" << std::endl;
+		  if(debug>1) {
+		    if (electron.triggerObjectMatch(i)!=0) {
+		      std::cout << "  iMatch=" << i << " PathNames=";
+		      for(auto const & name : electron.triggerObjectMatch(i)->pathNames()){
+			std::cout << " " << name;
+		      }
+		      std::cout << " AlgoNames=";
+		      for(auto const & name : electron.triggerObjectMatch(i)->algorithmNames()){
+			std::cout << " " << name;
+		      }
+		      std::cout << std::endl;
+		    }
+		  }
+		  if(debug>1) {
+		    if(electron.triggerObjectMatch(i)!=0 ) {
+		      std::cout << "HERE0 "
+				<< cstr << " "
+				<< electron.triggerObjectMatch(i)->hasPathName(cstr,false,false) << " "
+				<< electron.triggerObjectMatch(i)->hasPathName(cstr,false,true) << " "
+				<< electron.triggerObjectMatch(i)->hasPathName(cstr,true,false) << " "
+				<< electron.triggerObjectMatch(i)->hasPathName(cstr,true,true) << " "
+				<< electron.triggerObjectMatch(i)->hasPathLastFilterAccepted() << " "
+				<< electron.triggerObjectMatch(i)->hasPathL3FilterAccepted() << " "
+				<< std::endl;
+		    }
+		  }
+		    if(electron.triggerObjectMatch(i)!=0 && electron.triggerObjectMatch(i)->hasPathName(cstr,false,true)){
+		      //if(abs(electron.triggerObjectMatch(i)->eta())>1.5) std::cout << "HEEEEEEEEEEEEEEEEEEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE eta=" <<electron.triggerObjectMatch(i)->eta();
+		        if(debug>1) std::cout << "HERE1" << std::endl;
                         frs[ipath]=1;
-										// RB: deltaR match determined for trigger (eta,phi) and electron SuperCluster (eta,phi) positions ...
-										float dr=TMath::Sqrt(pow(electron.triggerObjectMatch(i)->eta()-electron.superCluster()->eta(),2.)+pow(electron.triggerObjectMatch(i)->phi()-electron.superCluster()->phi(),2.));
-										float dpt=(electron.triggerObjectMatch(i)->pt()-electron.pt())/electron.triggerObjectMatch(i)->pt();
-										temp_dr[i]=dr;
-										temp_dpt[i]=dpt;
-										temp_pt[i]=electron.triggerObjectMatch(i)->pt();                   
-										//if(debug>1)std::cout <<" Path=" <<cstr << endl;
-										if(debug>1)std::cout <<" HLT  Pt="<<electron.triggerObjectMatch(i)->pt() <<" Eta="<<electron.triggerObjectMatch(i)->eta() <<" Phi="<<electron.triggerObjectMatch(i)->phi() << endl;
-										if(debug>1)std::cout <<" Electron Pt="<< electron.pt() << " Eta=" << electron.eta() << " Phi=" << electron.phi()  <<endl;
-										if(debug>1)std::cout <<" DR = " << temp_dr[i] <<endl;
-                  }
+			// RB: deltaR match determined for trigger (eta,phi) and electron SuperCluster (eta,phi) positions ...
+                        float dr=TMath::Sqrt(pow(electron.triggerObjectMatch(i)->eta()-electron.superCluster()->eta(),2.)+
+					     pow(electron.triggerObjectMatch(i)->phi()-electron.superCluster()->phi(),2.));
+                        float dpt=(electron.triggerObjectMatch(i)->pt()-electron.pt())/electron.triggerObjectMatch(i)->pt();
+                        temp_dr[i]=dr;
+                        temp_dpt[i]=dpt;
+                        temp_pt[i]=electron.triggerObjectMatch(i)->pt();                   
+                        //if(debug>1)std::cout <<" Path=" <<cstr << endl;
+                        if(debug>1)std::cout <<" HLT  Pt="<<electron.triggerObjectMatch(i)->pt() <<" Eta="<<electron.triggerObjectMatch(i)->eta() <<" Phi="<<electron.triggerObjectMatch(i)->phi() << endl;
+                        if(debug>1)std::cout <<" Electron Pt="<< electron.pt() << " Eta=" << electron.eta() << " Phi=" << electron.phi()  <<endl;
+                        if(debug>1)std::cout <<" DR = " << temp_dr[i] <<endl;
+                    }
                 }
                 // and now we find the real minimum between the reco electron and all its matched HLT objects. 
                 temp_DR[ipath]=*min_element(temp_dr.begin(),temp_dr.end());
@@ -384,13 +391,6 @@ void ElectronTriggerSelector::produce(edm::Event& iEvent, const edm::EventSetup&
             trgelectrons_out->emplace_back(recoTriggerElectronCand);
         }
     }
-		// if(trgelectrons_out->size()==0){ 
-			// std::cout <<"HERE!! trgelectrons_out->size()==0" << endl;
-			// std::cout << "number of Electrons=" <<electrons->size() << endl;
-			// for(const pat::Electron & electron : *electrons){
-				// std::cout << "triggerObjectMatches: "<< electron.triggerObjectMatches().size() << " pt: " << electron.pt() << " eta: " << electron.eta() << endl;
-			// }
-		// }
 
     //and now save the reco electron triggering or not 
     for(const pat::Electron & electron : *electrons){

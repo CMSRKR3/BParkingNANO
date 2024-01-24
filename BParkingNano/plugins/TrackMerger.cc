@@ -169,7 +169,7 @@ void TrackMerger::produce(edm::StreamID, edm::Event &evt, edm::EventSetup const 
       dzTrg = trk.vz() - trg.vz();
       break; // at least for one trg lepton to pass this cuts
     }
-    if (trgLeptons->empty()) { skipTrack=false; } //@@ needed???
+    // if (trgLeptons->empty()) { skipTrack=false; } //@@ needed???
 
     // if track is closer to at least a triggering lepton keep it
     if (filterTrack_ && skipTrack ) continue;
