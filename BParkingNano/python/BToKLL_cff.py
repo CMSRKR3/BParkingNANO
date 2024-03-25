@@ -108,7 +108,7 @@ BToKeeTable = cms.EDProducer(
         pre_vtx_sel = Var("userInt('pre_vtx_sel')", bool, doc="Satisfies pre-vertexing selections?"),
         post_vtx_sel = Var("userInt('post_vtx_sel')", bool, doc="Satisfies post-vertexing selections?"),
         # fit and vtx info
-        #chi2 = ufloat('sv_chi2'),
+        chi2 = ufloat('sv_chi2'),
         svprob = ufloat('sv_prob'),
         l_xy = ufloat('l_xy'),
         l_xy_unc = ufloat('l_xy_unc'),

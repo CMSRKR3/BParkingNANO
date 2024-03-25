@@ -68,9 +68,9 @@ if not options.inputFiles:
         ]
     elif options.lhcRun == 3:
         options.inputFiles = [
-            'file:/eos/home-x/xuyan/RKProj/KStarllStudy/BToKEE_signal.root',
+            'file:/eos/home-x/xuyan/RKProj/RKAnalyzer/KStarllStudy/BToKEE_signal.root',
         ] if options.isMC else [
-            'file:/eos/home-x/xuyan/RKProj/KStarllStudy/BToKEE_signal.root'
+            'file:/eos/home-x/xuyan/RKProj/RKAnalyzer/KStarllStudy/BToKEE_signal.root'
         ]
 annotation = '%s nevts:%d' % (outputFileNANO, options.maxEvents)
 

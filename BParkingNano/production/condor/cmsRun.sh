@@ -14,19 +14,19 @@ cp ${1}${2}.tgz .
 tar -xf ${2}.tgz
 rm ${2}.tgz
 mv ${5} ${3}/src/PhysicsTools/BParkingNano
-mv filelist.tgz ${3}/src/PhysicsTools/BParkingNano
+mv filelist_${2}.tgz ${3}/src/PhysicsTools/BParkingNano
 
 # export $SCRAM_ARCH=slc7_amd64_gcc700
 cd ${3}/src/
 scramv1 b ProjectRename -j 8
 eval `scramv1 runtime -sh` # cmsenv is an alias not on the workers
 cd PhysicsTools/BParkingNano
-tar -xf filelist.tgz
+tar -xf filelist_${2}.tgz
 ls ./
 touch log.txt
-cmsRun ${5} inputFiles_load=${6} 2>&1 | tee log.txt
+cmsRun ${5} inputFiles_load=${6} isMC=${8} 2>&1 | tee log.txt
 cp log.txt ${1}/log_${4}.txt
-cp BParkingNANO_Run3_mc_124X.root ${1}/myNano_${4}.root
-rm BParkingNANO_Run3_mc_124X.root
+cp BParkingNANO_Run3_*.root ${1}/myNano_${4}.root
+rm BParkingNANO_Run3_*.root
 cd ${_CONDOR_SCRATCH_DIR}
 rm -rf ${3}
