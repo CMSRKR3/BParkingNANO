@@ -5,15 +5,15 @@ print '\nSTART\n'
 ts = calendar.timegm(time.gmtime())
 
 # joblist = ["BuToKEE","BdToK0starEE_postEE","BdToK0starEE_postEE_ext1","BdToK0starEE_preEE","BdToK0starEE_preEE_ext1"]
-joblist = ["DataF"]
+joblist = ["BuToKJPsi"]
 
-jobdic = {
-           "DataF":"ParkingDoubleElectronLowMass0_Run2022F.list",
-           "BuToKEE":"BuToKEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen.list",
-           "BdToK0starEE_postEE":"BdToK0starEE_K0starToKPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen_postEE.list",
-           "BdToK0starEE_postEE_ext1":"BdToK0starEE_K0starToKPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen_postEE_ext1.list",
-           "BdToK0starEE_preEE":"BdToK0starEE_K0starToKPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen_preEE.list",
-           "BdToK0starEE_preEE_ext1":"BdToK0starEE_K0starToKPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen_preEE_ext1.list",
+jobdic = {"BuToKJPsi":"BuToKJPsi_JPsiToEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen.list",
+           # "DataF":"ParkingDoubleElectronLowMass0_Run2022F.list",
+           # "BuToKEE":"BuToKEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen.list",
+           # "BdToK0starEE_postEE":"BdToK0starEE_K0starToKPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen_postEE.list",
+           # "BdToK0starEE_postEE_ext1":"BdToK0starEE_K0starToKPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen_postEE_ext1.list",
+           # "BdToK0starEE_preEE":"BdToK0starEE_K0starToKPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen_preEE.list",
+           # "BdToK0starEE_preEE_ext1":"BdToK0starEE_K0starToKPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen_preEE_ext1.list",
 }
 
 for jobName in joblist:

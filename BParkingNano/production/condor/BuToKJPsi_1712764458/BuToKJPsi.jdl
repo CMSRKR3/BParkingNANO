@@ -1,0 +1,12 @@
+universe = vanilla
+Executable = cmsRun.sh
+Should_Transfer_Files = YES
+WhenToTransferOutput = ON_EXIT
+Transfer_Input_Files = cmsRun.sh, run_nano_cfg.py, filelist_BuToKJPsi.tgz
+Output = /afs/cern.ch/work/x/xuyan/RKProj/BParkingNanoOfficial/CMSSW_13_1_0/src/PhysicsTools/BParkingNano/production/condor/BuToKJPsi_1712764458/out/$(ProcId).out
+Error = /afs/cern.ch/work/x/xuyan/RKProj/BParkingNanoOfficial/CMSSW_13_1_0/src/PhysicsTools/BParkingNano/production/condor/BuToKJPsi_1712764458/err/$(ProcId).err
+Log = /afs/cern.ch/work/x/xuyan/RKProj/BParkingNanoOfficial/CMSSW_13_1_0/src/PhysicsTools/BParkingNano/production/condor/BuToKJPsi_1712764458/log/$(ProcId).log
+Arguments = /eos/home-x/xuyan/RKProj/RKAnalyzer/KStarllStudy/Data/BuToKJPsi_1712764458/ BuToKJPsi CMSSW_13_1_0 $(ProcId) run_nano_cfg.py filelist_tmp_$(ProcId).list /afs/cern.ch/user/x/xuyan/private/x509up/x509up_u93529 True
+MY.WantOS = "el7"
++JobFlavour = "tomorrow"
+Queue 11

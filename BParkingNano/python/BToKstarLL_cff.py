@@ -262,7 +262,7 @@ BToKstarMuMuTable = BToKstarEETable.clone(
 )
 
 CountBToKstarEE = cms.EDFilter("PATCandViewCountFilter",
-    minNumber = cms.uint32(0),
+    minNumber = cms.uint32(1),
     maxNumber = cms.uint32(99999999),
     src = cms.InputTag("BToKstarEE")
 )    
