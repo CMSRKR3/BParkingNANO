@@ -33,10 +33,10 @@ electronsForAnalysis = cms.EDProducer(
   dzForCleaning = cms.double(0.5), ##keep tighter dZ to check overlap of pfEle with lowPt (?)
   ## true = flag and clean; false = only flag
   flagAndclean = cms.bool(False),
-  pf_ptMin = cms.double(0.5),
+  pf_ptMin = cms.double(1.),
   ptMin = cms.double(0.5),
   etaMax = cms.double(2.5),
-  bdtMin = cms.double(-100), #@@ was -2.5, this cut can be used to deactivate low pT e if set to >12
+  bdtMin = cms.double(-2.5), #@@ was -2.5, this cut can be used to deactivate low pT e if set to >12
   useRegressionModeForP4 = cms.bool(False),
   useGsfModeForP4 = cms.bool(False),
   sortOutputCollections = cms.bool(True),
@@ -182,7 +182,7 @@ BToKEE_OpenConfig.toModify(electronsForAnalysis,
                            pf_ptMin=0.5,
                            ptMin=0.5,
                            etaMax=2.5,
-                           bdtMin=-100,
+                           bdtMin=-1.e3,
                            flagAndclean=False,
                            #drForCleaning_wrtTrgLepton=-1.,
                            #dzForCleaning_wrtTrgLepton=-1.,
@@ -192,7 +192,7 @@ BToKEE_OpenConfig.toModify(electronsForAnalysis,
 
 BToKEE_DiEle.toModify(electronsForAnalysis,
                       trgLepton = 'electronTrgSelector:trgElectrons',
-                      bdtMin = -100, # Open this up and rely on L/M/T WPs
+                      bdtMin = -100., # Open this up and rely on L/M/T WPs
                       useGsfModeForP4 = True, # Use GSF for PF ele as well
                       saveLowPtE = False, # Don't use low-pT ele
                       drForCleaning_wrtTrgLepton = -1.)

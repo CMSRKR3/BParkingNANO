@@ -8,14 +8,9 @@ electronPairsForKee = cms.EDProducer(
     lep1Selection = cms.string('pt > 1.3'),
     lep2Selection = cms.string(''),
     filterBySelection = cms.bool(True),
-    # preVtxSelection = cms.string(
-        # 'abs(userCand("l1").vz - userCand("l2").vz) <= 1. && mass() < 5 '
-        # '&& mass() > 0 && charge() == 0 && userFloat("lep_deltaR") > 0.03 && userInt("nlowpt")<2'
-        
-    # ),
     preVtxSelection = cms.string(
         'abs(userCand("l1").vz - userCand("l2").vz) <= 1. && mass() < 5 '
-        '&& mass() > 0 && charge() == 0 && userFloat("lep_deltaR") > 0.03 && userInt("nlowpt") < 1'
+        '&& mass() > 0 && charge() == 0 && userFloat("lep_deltaR") > 0.03 && userInt("nlowpt")<2'
         
     ),
     postVtxSelection = cms.string('userFloat("sv_chi2") < 998 && userFloat("sv_prob") > 1.e-5'),
@@ -225,61 +220,61 @@ BToKLLTables = cms.Sequence(BToKeeTable + BToKmumuTable)
 # Modifiers
 ###########
 
-# from PhysicsTools.BParkingNano.modifiers_cff import *
+from PhysicsTools.BParkingNano.modifiers_cff import *
 
-# BToKMuMu_OpenConfig.toModify(muonPairsForKmumu,
-                             # lep1Selection='pt > 0.5',
-                             # lep2Selection='',
-                             # preVtxSelection='abs(userCand("l1").vz - userCand("l2").vz) <= 10. && '\
-                             # 'mass() < 10. && mass() > 0. && '\
-                             # 'charge() == 0 && '\
-                             # 'userFloat("lep_deltaR") > 0. && '\
-                             # 'userInt("nlowpt")<1',
-                             # postVtxSelection='userFloat("sv_chi2") < 1.e6 && '\
-                             # 'userFloat("sv_prob") > 0.',
-                             # filterBySelection=True)
-# BToKMuMu_OpenConfig.toModify(BToKmumu,
-                             # kaonSelection='',
-                             # isoTracksSelection='pt > 0.5 && abs(eta)<2.5',
-                             # isoTracksDCASelection='pt > 0.5 && abs(eta)<2.5',
-                             # isotrkDCACut=0.,
-                             # isotrkDCATightCut=0.,
-                             # drIso_cleaning=0.,
-                             # filterBySelection=False)
-# BToKMuMu_OpenConfig.toModify(CountBToKmumu,minNumber=0)
+BToKMuMu_OpenConfig.toModify(muonPairsForKmumu,
+                             lep1Selection='pt > 0.5',
+                             lep2Selection='',
+                             preVtxSelection='abs(userCand("l1").vz - userCand("l2").vz) <= 10. && '\
+                             'mass() < 10. && mass() > 0. && '\
+                             'charge() == 0 && '\
+                             'userFloat("lep_deltaR") > 0. && '\
+                             'userInt("nlowpt")<1',
+                             postVtxSelection='userFloat("sv_chi2") < 1.e6 && '\
+                             'userFloat("sv_prob") > 0.',
+                             filterBySelection=True)
+BToKMuMu_OpenConfig.toModify(BToKmumu,
+                             kaonSelection='',
+                             isoTracksSelection='pt > 0.5 && abs(eta)<2.5',
+                             isoTracksDCASelection='pt > 0.5 && abs(eta)<2.5',
+                             isotrkDCACut=0.,
+                             isotrkDCATightCut=0.,
+                             drIso_cleaning=0.,
+                             filterBySelection=False)
+BToKMuMu_OpenConfig.toModify(CountBToKmumu,minNumber=0)
 
-# BToKEE_OpenConfig.toModify(electronPairsForKee,
-                           # lep1Selection='pt > 0.5',
-                           # lep2Selection='',
-                           # filterBySelection=False)
-# BToKEE_OpenConfig.toModify(BToKee,
-                           # kaonSelection='',
-                           # isoTracksSelection='pt > 0.5 && abs(eta)<2.5',
-                           # isoTracksDCASelection='pt > 0.5 && abs(eta)<2.5',
-                           # isotrkDCACut=0.,
-                           # isotrkDCATightCut=0.,
-                           # drIso_cleaning=0.,
-                           # filterBySelection=False)
-# BToKEE_OpenConfig.toModify(CountBToKee,minNumber=0)
+BToKEE_OpenConfig.toModify(electronPairsForKee,
+                           lep1Selection='pt > 0.5',
+                           lep2Selection='',
+                           filterBySelection=False)
+BToKEE_OpenConfig.toModify(BToKee,
+                           kaonSelection='',
+                           isoTracksSelection='pt > 0.5 && abs(eta)<2.5',
+                           isoTracksDCASelection='pt > 0.5 && abs(eta)<2.5',
+                           isotrkDCACut=0.,
+                           isotrkDCATightCut=0.,
+                           drIso_cleaning=0.,
+                           filterBySelection=False)
+BToKEE_OpenConfig.toModify(CountBToKee,minNumber=0)
 
-# BToKMuMu_DiMuon.toModify(muonPairsForKmumu,
-                         # lep1Selection='pt > 4.0',
-                         # lep2Selection='pt > 4.0',
-                         # preVtxSelection = 
-                         # 'abs(userCand("l1").vz - userCand("l2").vz) <= 1.'\
-                         # ' && mass() > 2.9 && mass() < 3.3'\
-                         # ' && charge() == 0'\
-                         # ' && userFloat("lep_deltaR") > 0.03',
-                         # postVtxSelection = 
-                         # 'userFloat("sv_chi2") < 998.'\
-                         # ' && userFloat("sv_prob") > 1.e-5'
-# )
-# BToKMuMu_DiMuon.toModify(BToKmumu,
-                         # preVtxSelection =
-                         # 'pt > 10. && userFloat("min_dr") > 0.03 '\
-                         # ' && mass > 4. && mass < 7.',
-                         # postVtxSelection =
-                         # 'userInt("sv_OK") == 1'\
-                         # ' && userFloat("fitted_mass") > 4.5'\
-                         # ' && userFloat("fitted_mass") < 6.'
-# )
+BToKMuMu_DiMuon.toModify(muonPairsForKmumu,
+                         lep1Selection='pt > 4.0',
+                         lep2Selection='pt > 4.0',
+                         preVtxSelection = 
+                         'abs(userCand("l1").vz - userCand("l2").vz) <= 1.'\
+                         ' && mass() > 2.9 && mass() < 3.3'\
+                         ' && charge() == 0'\
+                         ' && userFloat("lep_deltaR") > 0.03',
+                         postVtxSelection = 
+                         'userFloat("sv_chi2") < 998.'\
+                         ' && userFloat("sv_prob") > 1.e-5'
+)
+BToKMuMu_DiMuon.toModify(BToKmumu,
+                         preVtxSelection =
+                         'pt > 10. && userFloat("min_dr") > 0.03 '\
+                         ' && mass > 4. && mass < 7.',
+                         postVtxSelection =
+                         'userInt("sv_OK") == 1'\
+                         ' && userFloat("fitted_mass") > 4.5'\
+                         ' && userFloat("fitted_mass") < 6.'
+)
