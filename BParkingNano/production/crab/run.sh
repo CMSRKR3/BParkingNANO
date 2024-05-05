@@ -1,11 +1,10 @@
 # Uncommented as required ...
-# python3 submit_on_crab.py --filter=Run2022C_part* #Noah
-# python3 submit_on_crab.py --filter=Run2022Dv1_part* #Noah
-# python3 submit_on_crab.py --filter=Run2022Dv2_part* #Noah
-
-# python3 submit_on_crab.py --filter=Run2022E_part* #Sebastian
-# python3 submit_on_crab.py --filter=Run2022F_part* #Sebastian
-# python3 submit_on_crab.py --filter=Run2022G_part* #Sebastian
+python3 submit_on_crab.py --filter=Run2022C_part* #Noah
+python3 submit_on_crab.py --filter=Run2022Dv1_part* #Noah
+python3 submit_on_crab.py --filter=Run2022Dv2_part* #Noah
+python3 submit_on_crab.py --filter=Run2022E_part* #Sebastian
+python3 submit_on_crab.py --filter=Run2022F_part* #Sebastian
+python3 submit_on_crab.py --filter=Run2022G_part* #Sebastian
 
 python3 submit_on_crab.py --filter=BuToKee_v1_preEE # Jay
 python3 submit_on_crab.py --filter=BuToKee_v1_postEE # Jay

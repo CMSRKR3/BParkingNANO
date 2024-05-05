@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 
 options = VarParsing('python')
 
-options.register('isMC', True,
+options.register('isMC', False,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
     "Run this on real data"
@@ -67,8 +67,12 @@ if not options.inputFiles:
             'root://cms-xrd-global.cern.ch//store/data/Run2018B/ParkingBPH4/MINIAOD/05May2019-v2/230000/6B5A24B1-0E6E-504B-8331-BD899EB60110.root'
         ]
     elif options.lhcRun == 3:
-        options.inputFiles = ['root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEMiniAODv4/BuToKEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/MINIAODSIM/130X_mcRun3_2022_realistic_postEE_v6-v2/40000/1f081dc8-a7ad-4498-877e-f036931cf850.root',
-        ] if options.isMC else ['root://cms-xrd-global.cern.ch//store/mc/Run3Summer22EEMiniAODv4/BuToKEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/MINIAODSIM/130X_mcRun3_2022_realistic_postEE_v6-v2/40000/1f081dc8-a7ad-4498-877e-f036931cf850.root'
+        options.inputFiles = [
+            '/store/data/Run2022F/ParkingDoubleElectronLowMass0/MINIAOD/PromptReco-v1/000/360/390/00000/8d5c45b2-a30f-454e-ba91-aa69de96ec56.root',
+            '/store/data/Run2022F/ParkingDoubleElectronLowMass0/MINIAOD/PromptReco-v1/000/360/391/00000/ee216f8f-5131-42de-9ffd-1d706b811f05.root',
+        ] if options.isMC else [
+            '/store/data/Run2022F/ParkingDoubleElectronLowMass0/MINIAOD/PromptReco-v1/000/360/390/00000/8d5c45b2-a30f-454e-ba91-aa69de96ec56.root',
+            '/store/data/Run2022F/ParkingDoubleElectronLowMass0/MINIAOD/PromptReco-v1/000/360/391/00000/ee216f8f-5131-42de-9ffd-1d706b811f05.root',
         ]
 annotation = '%s nevts:%d' % (outputFileNANO, options.maxEvents)
 

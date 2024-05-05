@@ -20,8 +20,8 @@ KstarToKPi = cms.EDProducer(
        'KstarBuilder',
         pfcands= cms.InputTag('tracksBPark', 'SelectedTracks'),
         transientTracks= cms.InputTag('tracksBPark', 'SelectedTransientTracks'),
-        trk1Selection = cms.string('pt > 0.5 && abs(eta) < 2.4'), #need optimization   
-        trk2Selection = cms.string('pt > 0.5 && abs(eta) < 2.4'), #need optimization
+        trk1Selection = cms.string('pt > 0.5 && abs(eta) < 2.5'), #need optimization   
+        trk2Selection = cms.string('pt > 0.5 && abs(eta) < 2.5'), #need optimization
         preVtxSelection = cms.string('abs(userCand("trk1").vz - userCand("trk2").vz) < 1.0' 
         ' && pt() > 2.0 && ( (mass() < 1.2 && mass() > 0.6)'
         ' || (userFloat("barMass") < 1.2 && userFloat("barMass") > 0.6) ) '
