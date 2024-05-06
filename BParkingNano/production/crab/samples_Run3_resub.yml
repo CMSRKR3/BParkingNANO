@@ -1,0 +1,174 @@
+common:
+  data:
+    splitting: 20
+    globaltag: 124X_dataRun3_Prompt_v4
+    lumimask: https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions22/Cert_Collisions2022_355100_362760_Golden.json
+  mc:
+    splitting: 1
+    globaltag: 124X_mcRun3_2022_realistic_v11
+samples:
+  Run2022C_part%d:
+    dataset: /ParkingDoubleElectronLowMass%d/Run2022C-PromptReco-v1/MINIAOD
+    isMC: False
+    parts:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  Run2022Dv1_part%d:
+    dataset: /ParkingDoubleElectronLowMass%d/Run2022D-PromptReco-v1/MINIAOD
+    isMC: False
+    parts:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  Run2022Dv2_part%d:
+    dataset: /ParkingDoubleElectronLowMass%d/Run2022D-PromptReco-v2/MINIAOD
+    isMC: False
+    parts:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  Run2022E_part%d:
+    dataset: /ParkingDoubleElectronLowMass%d/Run2022E-PromptReco-v1/MINIAOD
+    isMC: False
+    parts:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  Run2022F_part%d:
+    dataset: /ParkingDoubleElectronLowMass%d/Run2022F-PromptReco-v1/MINIAOD
+    isMC: False
+    parts:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  Run2022G_part%d:
+    dataset: /ParkingDoubleElectronLowMass%d/Run2022G-PromptReco-v1/MINIAOD
+    isMC: False
+    parts:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  BuToKee_PU0:
+    dataset: /BuTOKEE20220826bettersplitting/jodedra-SUMMER22_MINIAOD-d5db235e2a58bcae594a314d29cbde75/USER
+    isMC: True
+    dbs: phys03
+  BuToKJpsi_Toee_PU0:
+    dataset: /BuTOjpsiKEE20220831fiftyMbettersplitting/jodedra-SUMMER22_MINIAOD-d5db235e2a58bcae594a314d29cbde75/USER
+    isMC: True
+    dbs: phys03
+  BuToKPsi2S_Toee_PU0:
+    dataset: /BuTOpsi2sKEE20220831fiftyMbettersplitting/jodedra-SUMMER22_MINIAOD-d5db235e2a58bcae594a314d29cbde75/USER
+    isMC: True
+    dbs: phys03
+  BuToKee:
+    dataset: /BuTOKEE20221103FIFTYM/jodedra-SUMMER22_MINIAOD-8da3c779fd247f42d8411cf96207b146/USER
+    isMC: True
+    dbs: phys03
+  BuToKJpsi_Toee:
+    dataset: /BuTOjpsiKEE20221103FIFTYM/jodedra-SUMMER22_MINIAOD-8da3c779fd247f42d8411cf96207b146/USER
+    isMC: True
+    dbs: phys03
+  BuToKPsi2S_Toee:
+    dataset: /BuTOpsi2sKEE20221103FIFTYM/jodedra-SUMMER22_MINIAOD-8da3c779fd247f42d8411cf96207b146/USER
+    isMC: True
+    dbs: phys03
+
+  BuToKee_v1_preEE:
+    dataset: /BuToKEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+  BuToKee_v1_postEE:
+    dataset: /BuToKEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+
+  BuToKJpsi_Toee_v1_preEE:
+    dataset: /BuToKJPsi_JPsiToEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+  BuToKJpsi_Toee_v1_postEE:
+    dataset: /BuToKJPsi_JPsiToEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+
+  BuToKPsi2S_Toee_v1_preEE:
+    dataset: /BuToKPsi2s_Psi2sToEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+  BuToKPsi2S_Toee_v1_postEE:
+    dataset: /BuToKPsi2s_Psi2sToEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+
+  BdToK0starEE_v1_preEE:
+    dataset: /BdToK0starEE_K0starToKPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+  BdToK0starEE_v1_postEE:
+    dataset: /BdToK0starEE_K0starToKPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+
+  BdToK0starJpsi_Toee_v1_preEE:
+    dataset: /BdToK0starJPsi_K0starToKPi_JPsiToEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+  BdToK0starJpsi_Toee_v1_postEE:
+    dataset: /BdToK0starJPsi_K0starToKPi_JPsiToEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+
+  BdToK0starPsi2S_Toee_v1_preEE:
+    dataset: /BdToK0starPsi2s_K0starToKPi_Psi2sToEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+  BdToK0starPsi2S_Toee_v1_postEE:
+    dataset: /BdToK0starPsi2s_K0starToKPi_Psi2sToEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+
+  BuToKstarEE_v1_preEE:
+    dataset: /BuToKstarEE_KstarToK0Pi_K0ToPiPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+  BuToKstarEE_v1_postEE:
+    dataset: /BuToKstarEE_KstarToK0Pi_K0ToPiPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+
+  BuToKstarJpsi_Toee_v1_preEE:
+    dataset: /BuToKstarJPsi_KstarToK0Pi_JPsiToEE_K0ToPiPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+  BuToKstarJpsi_Toee_v1_postEE:
+    dataset: /BuToKstarJPsi_KstarToK0Pi_JPsiToEE_K0ToPiPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+
+  BuToKstarPsi2S_Toee_v1_preEE:
+    dataset: /BuToKstarPsi2s_KstarToK0Pi_Psi2sToEE_K0ToPiPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+  BuToKstarPsi2S_Toee_v1_postEE:
+    dataset: /BuToKstarPsi2s_KstarToK0Pi_Psi2sToEE_K0ToPiPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v2/MINIAODSIM
+    isMC: True
+    dbs: global

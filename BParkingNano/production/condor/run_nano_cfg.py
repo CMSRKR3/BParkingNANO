@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 
 options = VarParsing('python')
 
-options.register('isMC', False,
+options.register('isMC', True,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
     "Run this on real data"
@@ -39,7 +39,7 @@ options.register('lhcRun', 3,
     "LHC Run 2 or 3 (default)"
 )
 
-options.setDefault('maxEvents', 1000)
+options.setDefault('maxEvents', -1)
 options.setDefault('tag', '124X')
 options.parseArguments()
 print(options)
@@ -68,11 +68,9 @@ if not options.inputFiles:
         ]
     elif options.lhcRun == 3:
         options.inputFiles = [
-            '/store/data/Run2022F/ParkingDoubleElectronLowMass0/MINIAOD/PromptReco-v1/000/360/390/00000/8d5c45b2-a30f-454e-ba91-aa69de96ec56.root',
-            '/store/data/Run2022F/ParkingDoubleElectronLowMass0/MINIAOD/PromptReco-v1/000/360/391/00000/ee216f8f-5131-42de-9ffd-1d706b811f05.root',
+            'file:/eos/home-x/xuyan/RKProj/RKAnalyzer/KStarllStudy/BToKEE_signal.root',
         ] if options.isMC else [
-            '/store/data/Run2022F/ParkingDoubleElectronLowMass0/MINIAOD/PromptReco-v1/000/360/390/00000/8d5c45b2-a30f-454e-ba91-aa69de96ec56.root',
-            '/store/data/Run2022F/ParkingDoubleElectronLowMass0/MINIAOD/PromptReco-v1/000/360/391/00000/ee216f8f-5131-42de-9ffd-1d706b811f05.root',
+            'file:/eos/home-x/xuyan/RKProj/RKAnalyzer/KStarllStudy/BToKEE_signal.root'
         ]
 annotation = '%s nevts:%d' % (outputFileNANO, options.maxEvents)
 

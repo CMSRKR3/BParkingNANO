@@ -103,7 +103,7 @@ BToKeeTable = cms.EDProducer(
         pre_vtx_sel = Var("userInt('pre_vtx_sel')", bool, doc="Satisfies pre-vertexing selections?"),
         post_vtx_sel = Var("userInt('post_vtx_sel')", bool, doc="Satisfies post-vertexing selections?"),
         # fit and vtx info
-        #chi2 = ufloat('sv_chi2'),
+        chi2 = ufloat('sv_chi2'),
         svprob = ufloat('sv_prob'),
         l_xy = ufloat('l_xy'),
         l_xy_unc = ufloat('l_xy_unc'),
@@ -115,6 +115,7 @@ BToKeeTable = cms.EDProducer(
         vtx_ez = ufloat('vtx_ez'),
         # Mll
         mll_raw = Var('userCand("dilepton").mass()', float),
+        mll_charge = Var('userCand("dilepton").charge()', float),
         mll_llfit = Var('userCand("dilepton").userFloat("fitted_mass")', float), # this might not work
         mllErr_llfit = Var('userCand("dilepton").userFloat("fitted_massErr")', float), # this might not work
         mll_fullfit = ufloat('fitted_mll'),
@@ -193,7 +194,7 @@ BToKmumuTable = BToKeeTable.clone(
 
 CountBToKee = cms.EDFilter("PATCandViewCountFilter",
     minNumber = cms.uint32(1),
-    maxNumber = cms.uint32(999999),
+    maxNumber = cms.uint32(99999999),
     src = cms.InputTag("BToKee")
 )    
 CountBToKmumu = CountBToKee.clone(

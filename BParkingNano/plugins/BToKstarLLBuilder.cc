@@ -1,5 +1,4 @@
 ////////////////////// Code to produce K*LL candidates /////////////////////////
-
 #include "FWCore/Framework/interface/global/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -8,6 +7,10 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
+#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
+#include "TrackingTools/Records/interface/TransientTrackRecord.h"
+#include "MagneticField/Engine/interface/MagneticField.h"
+#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
 
 #include <vector>
 #include <memory>
@@ -16,16 +19,13 @@
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 #include "CommonTools/Utils/interface/StringCutObjectSelector.h"
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
-#include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "CommonTools/Statistics/interface/ChiSquaredProbability.h"
 #include "helper.h"
 #include <limits>
 #include <algorithm>
 #include "KinVtxFitter.h"
-
-
-
+#include <TLorentzVector.h>
 
 class BToKstarLLBuilder : public edm::global::EDProducer<> {
 
@@ -34,18 +34,28 @@ public:
   typedef std::vector<reco::TransientTrack> TransientTrackCollection;
 
   explicit BToKstarLLBuilder(const edm::ParameterSet &cfg):
+		bFieldToken_(esConsumes<MagneticField, IdealMagneticFieldRecord>()),
     // selections
     pre_vtx_selection_{cfg.getParameter<std::string>("preVtxSelection")},
     post_vtx_selection_{cfg.getParameter<std::string>("postVtxSelection")},
+		filter_by_selection_{cfg.getParameter<bool>("filterBySelection")},
     //inputs
     dileptons_{consumes<pat::CompositeCandidateCollection>( cfg.getParameter<edm::InputTag>("dileptons") )},
+		dileptons_kinVtxs_{consumes<std::vector<KinVtxFitter> >( cfg.getParameter<edm::InputTag>("dileptonKinVtxs") )},
     kstars_{consumes<pat::CompositeCandidateCollection>( cfg.getParameter<edm::InputTag>("kstars") )},
     leptons_ttracks_{consumes<TransientTrackCollection>( cfg.getParameter<edm::InputTag>("leptonTransientTracks") )},
     kstars_ttracks_{consumes<TransientTrackCollection>( cfg.getParameter<edm::InputTag>("kstarsTransientTracks") )},
+		tracks_ttracks_(consumes<TransientTrackCollection>(cfg.getParameter<edm::InputTag>("tracksTransientTracks"))),
+    tracks_(consumes<pat::CompositeCandidateCollection>(cfg.getParameter<edm::InputTag>("tracks_kpi"))),
     isotracksToken_{consumes<pat::PackedCandidateCollection>(cfg.getParameter<edm::InputTag>("tracks"))},
     isolostTracksToken_{consumes<pat::PackedCandidateCollection>(cfg.getParameter<edm::InputTag>("lostTracks"))},
     isotrk_selection_{cfg.getParameter<std::string>("isoTracksSelection")},
-    beamspot_{consumes<reco::BeamSpot>( cfg.getParameter<edm::InputTag>("beamSpot") )} 
+    isotrk_dca_selection_{cfg.getParameter<std::string>("isoTracksDCASelection")},
+    isotrkDCACut_(cfg.getParameter<double>("isotrkDCACut")),
+    isotrkDCATightCut_(cfg.getParameter<double>("isotrkDCATightCut")),
+    drIso_cleaning_(cfg.getParameter<double>("drIso_cleaning")),
+    beamspot_{consumes<reco::BeamSpot>( cfg.getParameter<edm::InputTag>("beamSpot") )},
+		vertex_src_{consumes<reco::VertexCollection>( cfg.getParameter<edm::InputTag>("offlinePrimaryVertexSrc") )}
     {
        //output
       produces<pat::CompositeCandidateCollection>();
@@ -58,43 +68,74 @@ public:
   static void fillDescriptions(edm::ConfigurationDescriptions &descriptions) {}
   
 private:
+	const edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> bFieldToken_;
   // selections
   const StringCutObjectSelector<pat::CompositeCandidate> pre_vtx_selection_; // cut on the di-lepton before the SV fit
   const StringCutObjectSelector<pat::CompositeCandidate> post_vtx_selection_; // cut on the di-lepton after the SV fit
+	const bool filter_by_selection_;
 
 
   const edm::EDGetTokenT<pat::CompositeCandidateCollection> dileptons_;
+	const edm::EDGetTokenT<std::vector<KinVtxFitter> > dileptons_kinVtxs_;
   const edm::EDGetTokenT<pat::CompositeCandidateCollection> kstars_;
   const edm::EDGetTokenT<TransientTrackCollection> leptons_ttracks_;
   const edm::EDGetTokenT<TransientTrackCollection> kstars_ttracks_;
+	const edm::EDGetTokenT<TransientTrackCollection> tracks_ttracks_;
+	const edm::EDGetTokenT<pat::CompositeCandidateCollection> tracks_;
+	
   const edm::EDGetTokenT<pat::PackedCandidateCollection> isotracksToken_;
   const edm::EDGetTokenT<pat::PackedCandidateCollection> isolostTracksToken_;
   const StringCutObjectSelector<pat::PackedCandidate> isotrk_selection_; 
+  const StringCutObjectSelector<pat::CompositeCandidate> isotrk_dca_selection_; 
+  const double isotrkDCACut_;
+  const double isotrkDCATightCut_;
+  const double drIso_cleaning_;
+	
   const edm::EDGetTokenT<reco::BeamSpot> beamspot_;  
+	const edm::EDGetTokenT<reco::VertexCollection> vertex_src_;
 };
 
-void BToKstarLLBuilder::produce(edm::StreamID, edm::Event &evt, edm::EventSetup const &) const {
+void BToKstarLLBuilder::produce(edm::StreamID, edm::Event &evt, edm::EventSetup const &iSetup) const {
 
 
   //input
   edm::Handle<pat::CompositeCandidateCollection> dileptons;
   evt.getByToken(dileptons_, dileptons);  
+	
+	edm::Handle<std::vector<KinVtxFitter> > dileptons_kinVtxs;
+  evt.getByToken(dileptons_kinVtxs_, dileptons_kinVtxs);
+	
   edm::Handle<TransientTrackCollection> leptons_ttracks;
   evt.getByToken(leptons_ttracks_, leptons_ttracks);
 
   edm::Handle<pat::CompositeCandidateCollection> kstars;
   evt.getByToken(kstars_, kstars);  
+	
   edm::Handle<TransientTrackCollection> kstars_ttracks;
-  evt.getByToken(kstars_ttracks_, kstars_ttracks);   
+  evt.getByToken(kstars_ttracks_, kstars_ttracks);
+	
+	edm::Handle<pat::CompositeCandidateCollection> tracks;
+  evt.getByToken(tracks_, tracks);
+	
+	edm::Handle<TransientTrackCollection> tracks_ttracks;
+  evt.getByToken(tracks_ttracks_, tracks_ttracks);
 
   edm::Handle<reco::BeamSpot> beamspot;
   evt.getByToken(beamspot_, beamspot);  
+	
+	edm::Handle<reco::VertexCollection> pvtxs;
+  evt.getByToken(vertex_src_, pvtxs);
+
+  const auto& bField = iSetup.getData(bFieldToken_);
+  AnalyticalImpactPointExtrapolator extrapolator(&bField);
 
   //for isolation
   edm::Handle<pat::PackedCandidateCollection> iso_tracks;
   evt.getByToken(isotracksToken_, iso_tracks);
+	
   edm::Handle<pat::PackedCandidateCollection> iso_lostTracks;
   evt.getByToken(isolostTracksToken_, iso_lostTracks);
+	
   unsigned int nTracks     = iso_tracks->size();
   unsigned int totalTracks = nTracks + iso_lostTracks->size();
 
@@ -213,6 +254,12 @@ void BToKstarLLBuilder::produce(edm::StreamID, edm::Event &evt, edm::EventSetup 
       auto lxy = l_xy(fitter, *beamspot);
       cand.addUserFloat("l_xy", lxy.value());
       cand.addUserFloat("l_xy_unc", lxy.error());
+			cand.addUserFloat("vtx_x", cand.vx());
+      cand.addUserFloat("vtx_y", cand.vy());
+      cand.addUserFloat("vtx_z", cand.vz());
+      cand.addUserFloat("vtx_ex", sqrt(fitter.fitted_vtx_uncertainty().cxx()));
+      cand.addUserFloat("vtx_ey", sqrt(fitter.fitted_vtx_uncertainty().cyy()));
+      cand.addUserFloat("vtx_ez", sqrt(fitter.fitted_vtx_uncertainty().czz()));
 
       // second mass hypothesis
       auto trk1p4 = fitter.daughter_p4(0);
@@ -220,20 +267,42 @@ void BToKstarLLBuilder::produce(edm::StreamID, edm::Event &evt, edm::EventSetup 
       trk1p4.SetM(PI_MASS);
       trk2p4.SetM(K_MASS);
       cand.addUserFloat("barMasskstar_fullfit",(trk1p4+trk2p4).M());
-      cand.addUserFloat("fitted_barMass",(trk1p4+trk2p4+fitter.daughter_p4(2) + fitter.daughter_p4(3)).M());     
+      cand.addUserFloat("fitted_barMass",(trk1p4+trk2p4+fitter.daughter_p4(2) + fitter.daughter_p4(3)).M());
+			
+			// track 3D impact parameter from dilepton SV
+      TrajectoryStateOnSurface tsos_trk1 = extrapolator.extrapolate(tracks_ttracks->at(trk1_idx).impactPointState(), dileptons_kinVtxs->at(ll_idx).fitted_vtx());
+      std::pair<bool,Measurement1D> cur2DIP_trk1 = signedTransverseImpactParameter(tsos_trk1, dileptons_kinVtxs->at(ll_idx).fitted_refvtx(), *beamspot);
+      std::pair<bool,Measurement1D> cur3DIP_trk1 = signedImpactParameter3D(tsos_trk1, dileptons_kinVtxs->at(ll_idx).fitted_refvtx(), *beamspot, (*pvtxs)[0].position().z());
+
+      cand.addUserFloat("trk1_svip2d" , cur2DIP_trk1.second.value());
+      cand.addUserFloat("trk1_svip2d_err" , cur2DIP_trk1.second.error());
+      cand.addUserFloat("trk1_svip3d" , cur3DIP_trk1.second.value());
+      cand.addUserFloat("trk1_svip3d_err" , cur3DIP_trk1.second.error());
+			
+			// track 3D impact parameter from dilepton SV
+      TrajectoryStateOnSurface tsos_trk2 = extrapolator.extrapolate(tracks_ttracks->at(trk2_idx).impactPointState(), dileptons_kinVtxs->at(ll_idx).fitted_vtx());
+      std::pair<bool,Measurement1D> cur2DIP_trk2 = signedTransverseImpactParameter(tsos_trk2, dileptons_kinVtxs->at(ll_idx).fitted_refvtx(), *beamspot);
+      std::pair<bool,Measurement1D> cur3DIP_trk2 = signedImpactParameter3D(tsos_trk2, dileptons_kinVtxs->at(ll_idx).fitted_refvtx(), *beamspot, (*pvtxs)[0].position().z());
+
+      cand.addUserFloat("trk2_svip2d" , cur2DIP_trk2.second.value());
+      cand.addUserFloat("trk2_svip2d_err" , cur2DIP_trk2.second.error());
+      cand.addUserFloat("trk2_svip3d" , cur3DIP_trk2.second.value());
+      cand.addUserFloat("trk2_svip3d_err" , cur3DIP_trk2.second.error());
 
       // post fit selection
-      if( !post_vtx_selection_(cand) ) continue;        
+      bool post_vtx_sel = post_vtx_selection_(cand);
+      cand.addUserInt("post_vtx_sel",post_vtx_sel);
+      if( filter_by_selection_ && !post_vtx_sel ) continue;     
       
       //compute isolation
       float l1_iso03  = 0;
       float l1_iso04  = 0;
       float l2_iso03  = 0;
       float l2_iso04  = 0;
-      float tk1_iso03 = 0;
-      float tk1_iso04 = 0;
-      float tk2_iso03 = 0;
-      float tk2_iso04 = 0;
+      float trk1_iso03 = 0;
+      float trk1_iso04 = 0;
+      float trk2_iso03 = 0;
+      float trk2_iso04 = 0;
       float b_iso03   = 0;
       float b_iso04   = 0;
 
@@ -252,8 +321,8 @@ void BToKstarLLBuilder::produce(edm::StreamID, edm::Event &evt, edm::EventSetup 
         // add to final particle iso if dR < cone
         float dr_to_l1  = deltaR(cand.userFloat("fitted_l1_eta"),  cand.userFloat("fitted_l1_phi"),  trk.eta(), trk.phi());
         float dr_to_l2  = deltaR(cand.userFloat("fitted_l2_eta"),  cand.userFloat("fitted_l2_phi"),  trk.eta(), trk.phi());
-        float dr_to_tk1 = deltaR(cand.userFloat("fitted_trk1_eta"),cand.userFloat("fitted_trk1_phi"),trk.eta(), trk.phi());
-        float dr_to_tk2 = deltaR(cand.userFloat("fitted_trk2_eta"),cand.userFloat("fitted_trk2_phi"),trk.eta(), trk.phi());
+        float dr_to_trk1 = deltaR(cand.userFloat("fitted_trk1_eta"),cand.userFloat("fitted_trk1_phi"),trk.eta(), trk.phi());
+        float dr_to_trk2 = deltaR(cand.userFloat("fitted_trk2_eta"),cand.userFloat("fitted_trk2_phi"),trk.eta(), trk.phi());
         float dr_to_b   = deltaR(cand.userFloat("fitted_eta"),     cand.userFloat("fitted_phi"),     trk.eta(), trk.phi());
 
         if (dr_to_l1 < 0.4){
@@ -264,29 +333,211 @@ void BToKstarLLBuilder::produce(edm::StreamID, edm::Event &evt, edm::EventSetup 
           l2_iso04 += trk.pt();
           if (dr_to_l2 < 0.3)  l2_iso03 += trk.pt();
         }
-        if (dr_to_tk1 < 0.4){
-          tk1_iso04 += trk.pt();
-          if (dr_to_tk1 < 0.3) tk1_iso03 += trk.pt();
+        if (dr_to_trk1 < 0.4){
+          trk1_iso04 += trk.pt();
+          if (dr_to_trk1 < 0.3) trk1_iso03 += trk.pt();
         }
-        if (dr_to_tk2 < 0.4){
-          tk2_iso04 += trk.pt();
-          if (dr_to_tk2 < 0.3) tk2_iso03 += trk.pt();
+        if (dr_to_trk2 < 0.4){
+          trk2_iso04 += trk.pt();
+          if (dr_to_trk2 < 0.3) trk2_iso03 += trk.pt();
         }
         if (dr_to_b < 0.4){
           b_iso04 += trk.pt();
           if (dr_to_b < 0.3) b_iso03 += trk.pt();
         }
       }
-      cand.addUserFloat("l1_iso03" , l1_iso03);
-      cand.addUserFloat("l1_iso04" , l1_iso04);
-      cand.addUserFloat("l2_iso03" , l2_iso03);
-      cand.addUserFloat("l2_iso04" , l2_iso04);
-      cand.addUserFloat("tk1_iso03", tk1_iso03);
-      cand.addUserFloat("tk1_iso04", tk1_iso04);
-      cand.addUserFloat("tk2_iso03", tk2_iso03);
-      cand.addUserFloat("tk2_iso04", tk2_iso04);
-      cand.addUserFloat("b_iso03"  , b_iso03 );
-      cand.addUserFloat("b_iso04"  , b_iso04 );
+			
+			
+			//compute isolation from surrounding tracks only
+      float l1_iso03_dca = 0;
+      float l1_iso04_dca = 0;
+      float l2_iso03_dca = 0;
+      float l2_iso04_dca = 0;
+      float trk1_iso03_dca  = 0;
+      float trk2_iso03_dca  = 0;
+			float trk1_iso04_dca  = 0;
+      float trk2_iso04_dca  = 0;
+      float b_iso03_dca  = 0;
+      float b_iso04_dca  = 0;
+			int l1_n_isotrk = 0;
+      int l2_n_isotrk = 0;
+			int trk1_n_isotrk = 0;
+			int trk2_n_isotrk = 0;
+			int b_n_isotrk = 0;
+      int l1_n_isotrk_dca = 0;
+      int l2_n_isotrk_dca = 0;
+      int trk1_n_isotrk_dca = 0;
+			int trk2_n_isotrk_dca = 0;
+      int b_n_isotrk_dca = 0;
+
+      float l1_iso03_dca_tight = 0;
+      float l1_iso04_dca_tight = 0;
+      float l2_iso03_dca_tight = 0;
+      float l2_iso04_dca_tight = 0;
+      float trk1_iso03_dca_tight  = 0;
+      float trk1_iso04_dca_tight  = 0;
+			float trk2_iso03_dca_tight  = 0;
+      float trk2_iso04_dca_tight  = 0;
+      float b_iso03_dca_tight  = 0;
+      float b_iso04_dca_tight  = 0;
+      int l1_n_isotrk_dca_tight = 0;
+      int l2_n_isotrk_dca_tight = 0;
+      int trk1_n_isotrk_dca_tight = 0;
+			int trk2_n_isotrk_dca_tight = 0;
+      int b_n_isotrk_dca_tight = 0;
+
+      for(size_t trk_idx = 0; trk_idx < tracks->size(); ++trk_idx) {
+        // corss clean kaon
+        if (int(trk_idx) == trk1_idx || int(trk_idx) == trk2_idx) continue;
+        edm::Ptr<pat::CompositeCandidate> trk_ptr(tracks, trk_idx);
+        if( !isotrk_dca_selection_(*trk_ptr) ) continue;
+        // cross clean PF (electron and muon)
+        unsigned int iTrk = trk_ptr->userInt("keyPacked");
+        if (track_to_lepton_match(l1_ptr, iso_tracks.id().id(), iTrk) ||
+            track_to_lepton_match(l2_ptr, iso_tracks.id().id(), iTrk) ) {
+          continue;
+        }
+        // cross clean leptons
+        // hard to trace the source particles of low-pT electron in B builder
+        // use simple dR cut instead
+        float dr_to_l1_prefit = deltaR(l1_ptr->eta(), l1_ptr->phi(), trk_ptr->eta(), trk_ptr->phi());
+        float dr_to_l2_prefit = deltaR(l2_ptr->eta(), l2_ptr->phi(), trk_ptr->eta(), trk_ptr->phi());
+        if ((dr_to_l1_prefit < drIso_cleaning_) || (dr_to_l2_prefit < drIso_cleaning_)) continue;
+
+        TrajectoryStateOnSurface tsos_iso = extrapolator.extrapolate(tracks_ttracks->at(trk_idx).impactPointState(), fitter.fitted_vtx());
+        std::pair<bool,Measurement1D> cur3DIP_iso = absoluteImpactParameter3D(tsos_iso, fitter.fitted_refvtx());
+        float svip_iso = cur3DIP_iso.second.value();
+        if (cur3DIP_iso.first && svip_iso < isotrkDCACut_) {
+          // add to final particle iso if dR < cone
+          float dr_to_l1 = deltaR(cand.userFloat("fitted_l1_eta"), cand.userFloat("fitted_l1_phi"), trk_ptr->eta(), trk_ptr->phi());
+          float dr_to_l2 = deltaR(cand.userFloat("fitted_l2_eta"), cand.userFloat("fitted_l2_phi"), trk_ptr->eta(), trk_ptr->phi());
+					float dr_to_trk1  = deltaR(cand.userFloat("fitted_trk1_eta") , cand.userFloat("fitted_trk1_phi") , trk_ptr->eta(), trk_ptr->phi());
+          float dr_to_trk2  = deltaR(cand.userFloat("fitted_trk2_eta") , cand.userFloat("fitted_trk2_phi") , trk_ptr->eta(), trk_ptr->phi());
+          float dr_to_b  = deltaR(cand.userFloat("fitted_eta")   , cand.userFloat("fitted_phi") , trk_ptr->eta(), trk_ptr->phi());
+
+          if (dr_to_l1 < 0.4){
+            l1_iso04_dca += trk_ptr->pt();
+            l1_n_isotrk_dca++;
+            if (svip_iso < isotrkDCATightCut_) {
+              l1_iso04_dca_tight += trk_ptr->pt();
+              l1_n_isotrk_dca_tight++;
+            }
+            if (dr_to_l1 < 0.3) {
+              l1_iso03_dca += trk_ptr->pt();
+              if (svip_iso < isotrkDCATightCut_) {
+                l1_iso03_dca_tight += trk_ptr->pt();
+              }
+            }
+          }
+          if (dr_to_l2 < 0.4){
+            l2_iso04_dca += trk_ptr->pt();
+            l2_n_isotrk_dca++;
+            if (svip_iso < isotrkDCATightCut_) {
+              l2_iso04_dca_tight += trk_ptr->pt();
+              l2_n_isotrk_dca_tight++;
+            }
+            if (dr_to_l2 < 0.3) {
+              l2_iso03_dca += trk_ptr->pt();
+              if (svip_iso < isotrkDCATightCut_) {
+                l2_iso03_dca_tight += trk_ptr->pt();
+              }
+            }
+          }
+          if (dr_to_trk1 < 0.4){
+            trk1_iso04_dca += trk_ptr->pt();
+            trk1_n_isotrk_dca++;
+            if (svip_iso < isotrkDCATightCut_) {
+              trk1_iso04_dca_tight += trk_ptr->pt();
+              trk1_n_isotrk_dca_tight++;
+            }
+            if (dr_to_trk1 < 0.3) {
+              trk1_iso03_dca += trk_ptr->pt();
+              if (svip_iso < isotrkDCATightCut_) {
+                trk1_iso03_dca_tight += trk_ptr->pt();
+              }
+            }
+          }
+					if (dr_to_trk2 < 0.4){
+            trk2_iso04_dca += trk_ptr->pt();
+            trk2_n_isotrk_dca++;
+            if (svip_iso < isotrkDCATightCut_) {
+              trk2_iso04_dca_tight += trk_ptr->pt();
+              trk2_n_isotrk_dca_tight++;
+            }
+            if (dr_to_trk2 < 0.3) {
+              trk2_iso03_dca += trk_ptr->pt();
+              if (svip_iso < isotrkDCATightCut_) {
+                trk2_iso03_dca_tight += trk_ptr->pt();
+              }
+            }
+          }
+          if (dr_to_b < 0.4){
+            b_iso04_dca += trk_ptr->pt();
+            b_n_isotrk_dca++;
+            if (svip_iso < isotrkDCATightCut_) {
+              b_iso04_dca_tight += trk_ptr->pt();
+              b_n_isotrk_dca_tight++;
+            }
+            if (dr_to_b < 0.3) {
+              b_iso03_dca += trk_ptr->pt();
+              if (svip_iso < isotrkDCATightCut_) {
+                b_iso03_dca_tight += trk_ptr->pt();
+              }
+            }
+          }
+        }
+      }
+
+
+      cand.addUserFloat("l1_iso03", l1_iso03);
+      cand.addUserFloat("l1_iso04", l1_iso04);
+      cand.addUserFloat("l2_iso03", l2_iso03);
+      cand.addUserFloat("l2_iso04", l2_iso04);
+			cand.addUserFloat("trk1_iso03" , trk1_iso03 );
+      cand.addUserFloat("trk1_iso04" , trk1_iso04 );
+      cand.addUserFloat("trk2_iso03" , trk2_iso03 );
+      cand.addUserFloat("trk2_iso04" , trk2_iso04 );
+      cand.addUserFloat("b_iso03" , b_iso03 );
+      cand.addUserFloat("b_iso04" , b_iso04 );
+      cand.addUserInt("l1_n_isotrk" , l1_n_isotrk);
+      cand.addUserInt("l2_n_isotrk" , l2_n_isotrk);
+			cand.addUserInt("trk1_n_isotrk" ,  trk1_n_isotrk);
+      cand.addUserInt("trk2_n_isotrk" ,  trk2_n_isotrk);
+      cand.addUserInt("b_n_isotrk" ,  b_n_isotrk);
+
+      cand.addUserFloat("l1_iso03_dca", l1_iso03_dca);
+      cand.addUserFloat("l1_iso04_dca", l1_iso04_dca);
+      cand.addUserFloat("l2_iso03_dca", l2_iso03_dca);
+      cand.addUserFloat("l2_iso04_dca", l2_iso04_dca);
+			cand.addUserFloat("trk1_iso03_dca" , trk1_iso03_dca );
+      cand.addUserFloat("trk1_iso04_dca" , trk1_iso04_dca );
+      cand.addUserFloat("trk2_iso03_dca" , trk2_iso03_dca );
+      cand.addUserFloat("trk2_iso04_dca" , trk2_iso04_dca );
+      cand.addUserFloat("b_iso03_dca" , b_iso03_dca );
+      cand.addUserFloat("b_iso04_dca" , b_iso04_dca );
+      cand.addUserInt("l1_n_isotrk_dca" , l1_n_isotrk_dca);
+      cand.addUserInt("l2_n_isotrk_dca" , l2_n_isotrk_dca);
+			cand.addUserInt("trk1_n_isotrk_dca" ,  trk1_n_isotrk_dca);
+      cand.addUserInt("trk2_n_isotrk_dca" ,  trk2_n_isotrk_dca);
+      cand.addUserInt("b_n_isotrk_dca" ,  b_n_isotrk_dca);
+
+      cand.addUserFloat("l1_iso03_dca_tight", l1_iso03_dca_tight);
+      cand.addUserFloat("l1_iso04_dca_tight", l1_iso04_dca_tight);
+      cand.addUserFloat("l2_iso03_dca_tight", l2_iso03_dca_tight);
+      cand.addUserFloat("l2_iso04_dca_tight", l2_iso04_dca_tight);
+			cand.addUserFloat("trk1_iso03_dca_tight" , trk1_iso03_dca_tight );
+      cand.addUserFloat("trk1_iso04_dca_tight" , trk1_iso04_dca_tight );
+      cand.addUserFloat("trk2_iso03_dca_tight" , trk2_iso03_dca_tight );
+      cand.addUserFloat("trk2_iso04_dca_tight" , trk2_iso04_dca_tight );
+      cand.addUserFloat("b_iso03_dca_tight" , b_iso03_dca_tight );
+      cand.addUserFloat("b_iso04_dca_tight" , b_iso04_dca_tight );
+      cand.addUserInt("l1_n_isotrk_dca_tight" , l1_n_isotrk_dca_tight);
+      cand.addUserInt("l2_n_isotrk_dca_tight" , l2_n_isotrk_dca_tight);
+			cand.addUserInt("trk1_n_isotrk_dca_tight" ,  trk1_n_isotrk_dca_tight);
+      cand.addUserInt("trk2_n_isotrk_dca_tight" ,  trk2_n_isotrk_dca_tight);
+      cand.addUserInt("b_n_isotrk_dca_tight" ,  b_n_isotrk_dca_tight);
+			
+			
             
       ret_val->push_back(cand);
 
