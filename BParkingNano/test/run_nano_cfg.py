@@ -39,7 +39,7 @@ options.register('lhcRun', 3,
     "LHC Run 2 or 3 (default)"
 )
 
-options.setDefault('maxEvents', 1000)
+options.setDefault('maxEvents', -1)
 options.setDefault('tag', '124X')
 options.parseArguments()
 print(options)

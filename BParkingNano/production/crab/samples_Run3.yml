@@ -100,6 +100,10 @@ samples:
     dataset: /BuToKEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v2/MINIAODSIM
     isMC: True
     dbs: global
+  BuToKee_2023:
+    dataset: /BuToKEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v3/MINIAODSIM
+    isMC: True
+    dbs: global
 
   BuToKJpsi_Toee_v1_preEE:
     dataset: /BuToKJPsi_JPsiToEE_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM
@@ -125,6 +129,24 @@ samples:
     dbs: global
   BdToK0starEE_v1_postEE:
     dataset: /BdToK0starEE_K0starToKPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+    
+  BdToK0starEE_MiniAODv4_preEE:
+    dataset: /BdToK0starEE_K0starToKPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22MiniAODv4-130X_mcRun3_2022_realistic_v5-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+  BdToK0starEE_MiniAODv4_postEE:
+    dataset: /BdToK0starEE_K0starToKPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22EEMiniAODv4-130X_mcRun3_2022_realistic_postEE_v6-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+    
+  BdToK0starEE_MiniAODv4_ext1_preEE:
+    dataset: /BdToK0starEE_K0starToKPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22MiniAODv4-130X_mcRun3_2022_realistic_v5_ext1-v2/MINIAODSIM
+    isMC: True
+    dbs: global
+  BdToK0starEE_MiniAODv4_ext1_postEE:
+    dataset: /BdToK0starEE_K0starToKPi_SoftQCD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22EEMiniAODv4-130X_mcRun3_2022_realistic_postEE_v6_ext1-v2/MINIAODSIM
     isMC: True
     dbs: global
 
